@@ -16,7 +16,7 @@ Smart project planning for AI coding agents. Create structured docs, track progr
 Add the marketplace:
 
 ```bash
-/plugin marketplace add joshlebed/claude-project-workflows
+/plugin marketplace add joshlebed/claude-extras
 ```
 
 Install the plugin:
@@ -35,7 +35,7 @@ Add this to your project's `.claude/settings.json`:
     "claude-extras": {
       "source": {
         "source": "github",
-        "repo": "joshlebed/claude-project-workflows"
+        "repo": "joshlebed/claude-extras"
       }
     }
   },
@@ -202,7 +202,7 @@ Read all files in @.agent-project-docs/<slug>/ starting with INDEX.md. Summarize
 ## Project Structure
 
 ```
-claude-project-workflows/
+claude-extras/
 ├── .claude-plugin/
 │   ├── marketplace.json     # Marketplace definition
 │   └── plugin.json          # Plugin metadata
@@ -269,7 +269,7 @@ Update PROGRESS.md immediately after completing each task. Don't batch updates.
 
 1. Fork the repository
 2. Make changes
-3. Test with `claude --plugin-dir ./claude-project-workflows`
+3. Test with `claude --plugin-dir ./claude-extras`
 4. Validate with `claude plugin validate .`
 5. Submit a pull request
 
