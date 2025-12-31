@@ -1,0 +1,23 @@
+{
+  "name": "pr-workflow",
+  "version": "1.0.0",
+  "description": "Automated PR workflow with specialized agents for description writing, critical review, tech lead decisions, and implementation.",
+  "author": {
+    "name": "Josh Lebedinsky"
+  },
+  "license": "MIT",
+  "keywords": [
+    "pull-request",
+    "code-review",
+    "workflow",
+    "automation",
+    "git"
+  ],
+  "homepage": "https://github.com/joshlebed/claude-extras",
+  "repository": "https://github.com/joshlebed/claude-extras",
+  "components": {
+    "agents": "./agents",
+    "commands": "./commands",
+    "hooks": "./hooks/hooks.json"
+  }
+}
