@@ -6,7 +6,7 @@ description: Show current project progress
 
 ## Context
 
-- Available projects: !`ls -d .agent-project-docs/*/ 2>/dev/null | grep -v _templates | xargs -I {} basename {} 2>/dev/null || echo "none"`
+- Available projects: !`ls -d .project-plan/*/ 2>/dev/null | grep -v _templates | xargs -I {} basename {} 2>/dev/null || echo "none"`
 
 ## Your Task
 
@@ -16,7 +16,7 @@ If no project specified, list all projects with their status.
 
 ### For Specific Project
 
-Read @.agent-project-docs/$ARGUMENTS/PROGRESS.md and show:
+Read @.project-plan/$ARGUMENTS/PROGRESS.md and show:
 
 ```
 ## Project: $ARGUMENTS
@@ -40,7 +40,7 @@ Read @.agent-project-docs/$ARGUMENTS/PROGRESS.md and show:
 - Blocker description
 
 ---
-Continue with: /cycle $ARGUMENTS
+Continue with: /work $ARGUMENTS
 ```
 
 ### For All Projects

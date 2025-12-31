@@ -1,7 +1,7 @@
 {
-  "name": "plan-smart",
+  "name": "project-plan",
   "version": "1.0.0",
-  "description": "Smart project planning for AI coding agents. Create structured docs, track progress, and run autonomous work cycles.",
+  "description": "Project planning for AI coding agents. Create structured docs, track progress, and run autonomous work cycles.",
   "author": {
     "name": "Josh Lebedinsky"
   },

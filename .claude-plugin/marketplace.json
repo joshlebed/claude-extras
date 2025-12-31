@@ -8,9 +8,9 @@
   },
   "plugins": [
     {
-      "name": "plan-smart",
-      "source": "./plugins/plan-smart",
-      "description": "Smart project planning for AI coding agents"
+      "name": "project-plan",
+      "source": "./plugins/project-plan",
+      "description": "Project planning for AI coding agents"
     },
     {
       "name": "pr-workflow",

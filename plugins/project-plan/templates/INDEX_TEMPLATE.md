@@ -176,7 +176,7 @@ When you create this INDEX.md for a new project:
 
 ### 1. Copy Template Structure
 
-Copy this file to `.agent-project-docs/<project-slug>/INDEX.md`
+Copy this file to `.project-plan/<project-slug>/INDEX.md`
 
 ### 2. Fill In Project Info
 

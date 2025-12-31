@@ -4,10 +4,10 @@ A plugin marketplace for Claude Code with useful workflow automation plugins.
 
 ## Plugins
 
-| Plugin                      | Description                                   |
-| --------------------------- | --------------------------------------------- |
-| [plan-smart](#plan-smart)   | Smart project planning for AI coding agents   |
-| [pr-workflow](#pr-workflow) | Automated PR workflow with specialized agents |
+| Plugin                          | Description                                   |
+| ------------------------------- | --------------------------------------------- |
+| [project-plan](#project-plan)   | Project planning for AI coding agents         |
+| [pr-workflow](#pr-workflow)     | Automated PR workflow with specialized agents |
 
 ## Installation
 
@@ -20,7 +20,7 @@ A plugin marketplace for Claude Code with useful workflow automation plugins.
 ### Install Plugins
 
 ```bash
-/plugin install plan-smart@claude-extras
+/plugin install project-plan@claude-extras
 /plugin install pr-workflow@claude-extras
 ```
 
@@ -39,7 +39,7 @@ Add to your project's `.claude/settings.json`:
     }
   },
   "enabledPlugins": {
-    "plan-smart@claude-extras": true,
+    "project-plan@claude-extras": true,
     "pr-workflow@claude-extras": true
   }
 }
@@ -47,34 +47,40 @@ Add to your project's `.claude/settings.json`:
 
 ### Updates
 
+You can turn on auto-updates for this marketplace with
+
+```
+/plugin -> marketplace -> claude-extras -> enable auto-update
+```
+
+or update manually with:
+
 ```bash
 /plugin marketplace update claude-extras
-/plugin update plan-smart@claude-extras
+/plugin update project-plan@claude-extras
 /plugin update pr-workflow@claude-extras
 ```
 
 ---
 
-## plan-smart
+## project-plan
 
-Smart project planning for AI coding agents. Create structured docs, track progress, and run autonomous work cycles.
+Project planning for AI coding agents. Create structured docs, track progress, and run autonomous work cycles.
 
 ### Commands
 
 | Command          | Description                                     |
 | ---------------- | ----------------------------------------------- |
-| `/setup`         | Initialize templates in `.agent-project-docs/`  |
-| `/init <name>`   | Create project documentation for a feature/task |
-| `/cycle <slug>`  | Autonomous work loop with progress updates      |
+| `/new <name>`    | Create project documentation for a feature/task |
+| `/work <slug>`   | Autonomous work loop with progress updates      |
 | `/status [slug]` | Show project progress                           |
 
 ### Quick Start
 
 ```
-/setup                           # Initialize templates
-/init Add User Authentication    # Create project docs
-/cycle add-user-authentication   # Work through tasks
-/status                          # Check progress
+/new Add User Authentication    # Create project docs
+/work add-user-authentication   # Work through tasks
+/status                         # Check progress
 ```
 
 ### When to Use
@@ -84,7 +90,7 @@ Smart project planning for AI coding agents. Create structured docs, track progr
 - Complex refactoring across modules
 - Projects spanning multiple sessions
 
-[Full documentation](./templates/README.md)
+[Full documentation](./plugins/project-plan/templates/README.md)
 
 ---
 
@@ -139,23 +145,20 @@ Or step-by-step:
 ```
 claude-extras/
 ├── .claude-plugin/
-│   ├── marketplace.json        # Marketplace definition
-│   └── plugin.json             # plan-smart plugin metadata
-├── commands/                   # plan-smart commands
-│   ├── setup.md
-│   ├── init.md
-│   ├── cycle.md
-│   └── status.md
-├── templates/                  # plan-smart templates
+│   └── marketplace.json        # Marketplace definition
 ├── plugins/
+│   ├── project-plan/           # project-plan plugin
+│   │   ├── .claude-plugin/
+│   │   │   └── plugin.json
+│   │   ├── commands/
+│   │   ├── templates/
+│   │   └── scripts/
 │   └── pr-workflow/            # pr-workflow plugin
 │       ├── .claude-plugin/
 │       │   └── plugin.json
 │       ├── agents/
 │       ├── commands/
-│       ├── hooks/
-│       └── README.md
-├── scripts/
+│       └── hooks/
 └── README.md
 ```
 
@@ -163,7 +166,7 @@ claude-extras/
 
 1. Fork the repository
 2. Make changes
-3. Test with `claude --plugin-dir ./` (for plan-smart) or `claude --plugin-dir ./plugins/pr-workflow` (for pr-workflow)
+3. Test with `claude --plugin-dir ./plugins/project-plan` or `claude --plugin-dir ./plugins/pr-workflow`
 4. Submit a pull request
 
 ## License
