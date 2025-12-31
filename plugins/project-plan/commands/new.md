@@ -78,4 +78,4 @@ Show:
 3. **PROGRESS.md**: Full contents
 4. **First 3 tasks**: What to do first
 
-Ask: "Ready to start with `/work <slug>`?"
+Ask: "Ready to start with `/project-plan:work <slug>`?"

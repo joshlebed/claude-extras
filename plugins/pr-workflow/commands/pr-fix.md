@@ -13,16 +13,19 @@ description: Implement MUST FIX items from tech lead decision
 **Arguments: $ARGUMENTS**
 
 **If in a git repository (single-repo context):**
+
 - Use the Task tool with `subagent_type: "pr-senior-engineer"` directly
 
 **If in a multi-repo workspace:**
+
 - Parse the first argument as the repository name
 - If no repository specified, ask the user which one
 - `cd` into that repository first, then invoke the agent
 
-If a tech lead decision was provided, use it. Otherwise, suggest running `/pr-workflow:pr-decide` first.
+If a tech lead decision was provided, use it. Otherwise, suggest running `/pr-workflow:decide` first.
 
 The senior engineer will:
+
 1. Implement all MUST FIX items
 2. Implement quick wins from NICE TO HAVE
 3. Skip FOLLOW-UP items

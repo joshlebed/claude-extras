@@ -49,20 +49,20 @@ Add to your project's `.claude/settings.json`:
 
 The plugin automatically detects your workspace type:
 
-| Context | Behavior |
-|---------|----------|
-| **Single repo** (`.git` in cwd) | Works on current directory |
-| **Multi-repo workspace** | Lists repos with changes, accepts repo name as argument |
+| Context                         | Behavior                                                |
+| ------------------------------- | ------------------------------------------------------- |
+| **Single repo** (`.git` in cwd) | Works on current directory                              |
+| **Multi-repo workspace**        | Lists repos with changes, accepts repo name as argument |
 
 ## Commands
 
-| Command | Description |
-|---------|-------------|
-| `/pr-describe [repo]` | Generate PR description |
-| `/pr-review [repo]` | Critical review of changes |
-| `/pr-decide [repo]` | Tech lead prioritization |
-| `/pr-fix [repo]` | Implement MUST FIX items |
-| `/pr-workflow [repo]` | Full automated workflow |
+| Command                        | Description                |
+| ------------------------------ | -------------------------- |
+| `/pr-workflow:describe [repo]` | Generate PR description    |
+| `/pr-workflow:review [repo]`   | Critical review of changes |
+| `/pr-workflow:decide [repo]`   | Tech lead prioritization   |
+| `/pr-workflow:fix [repo]`      | Implement MUST FIX items   |
+| `/pr-workflow:workflow [repo]` | Full automated workflow    |
 
 The `[repo]` argument is only needed in multi-repo workspaces.
 
@@ -71,10 +71,11 @@ The `[repo]` argument is only needed in multi-repo workspaces.
 ### Full Automated Workflow
 
 ```
-/pr-workflow
+/pr-workflow:workflow
 ```
 
 Runs all 4 agents sequentially:
+
 1. Generate PR description
 2. Critical review
 3. Tech lead scope decisions
@@ -84,24 +85,24 @@ Runs all 4 agents sequentially:
 ### Step-by-Step
 
 ```
-/pr-describe      # Generate PR description
-/pr-review        # Get critical review
-/pr-decide        # Get tech lead priorities
-/pr-fix           # Implement fixes
+/pr-workflow:describe      # Generate PR description
+/pr-workflow:review        # Get critical review
+/pr-workflow:decide        # Get tech lead priorities
+/pr-workflow:fix           # Implement fixes
 ```
 
 ### Multi-Repo Workspace
 
 ```
-/pr-workflow agent-framework    # Run on specific repo
-/pr-describe crud-service       # Describe changes in crud-service
+/pr-workflow:workflow agent-framework    # Run on specific repo
+/pr-workflow:describe crud-service       # Describe changes in crud-service
 ```
 
 ## Hooks
 
 Two helpful hooks are included:
 
-1. **PreToolUse** - Reminds you to run `/pr-describe` before `gh pr create` or `git push`
+1. **PreToolUse** - Reminds you to run `/pr-workflow:describe` before `gh pr create` or `git push`
 2. **Stop** - Reminds you to review agent outputs before creating your PR
 
 ### Disabling Hooks

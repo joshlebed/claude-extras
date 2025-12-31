@@ -4,10 +4,10 @@ A plugin marketplace for Claude Code with useful workflow automation plugins.
 
 ## Plugins
 
-| Plugin                          | Description                                   |
-| ------------------------------- | --------------------------------------------- |
-| [project-plan](#project-plan)   | Project planning for AI coding agents         |
-| [pr-workflow](#pr-workflow)     | Automated PR workflow with specialized agents |
+| Plugin                        | Description                                   |
+| ----------------------------- | --------------------------------------------- |
+| [project-plan](#project-plan) | Project planning for AI coding agents         |
+| [pr-workflow](#pr-workflow)   | Automated PR workflow with specialized agents |
 
 ## Installation
 
@@ -69,18 +69,18 @@ Project planning for AI coding agents. Create structured docs, track progress, a
 
 ### Commands
 
-| Command          | Description                                     |
-| ---------------- | ----------------------------------------------- |
-| `/new <name>`    | Create project documentation for a feature/task |
-| `/work <slug>`   | Autonomous work loop with progress updates      |
-| `/status [slug]` | Show project progress                           |
+| Command                       | Description                                     |
+| ----------------------------- | ----------------------------------------------- |
+| `/project-plan:new <name>`    | Create project documentation for a feature/task |
+| `/project-plan:work <slug>`   | Autonomous work loop with progress updates      |
+| `/project-plan:status [slug]` | Show project progress                           |
 
 ### Quick Start
 
 ```
-/new Add User Authentication    # Create project docs
-/work add-user-authentication   # Work through tasks
-/status                         # Check progress
+/project-plan:new Add User Authentication    # Create project docs
+/project-plan:work add-user-authentication   # Work through tasks
+/project-plan:status                         # Check progress
 ```
 
 ### When to Use
@@ -107,28 +107,28 @@ Automated PR workflow with specialized agents for description writing, critical 
 
 ### Commands
 
-| Command               | Description                |
-| --------------------- | -------------------------- |
-| `/pr-describe [repo]` | Generate PR description    |
-| `/pr-review [repo]`   | Critical review of changes |
-| `/pr-decide [repo]`   | Tech lead prioritization   |
-| `/pr-fix [repo]`      | Implement MUST FIX items   |
-| `/pr-workflow [repo]` | Full automated workflow    |
+| Command                        | Description                |
+| ------------------------------ | -------------------------- |
+| `/pr-workflow:describe [repo]` | Generate PR description    |
+| `/pr-workflow:review [repo]`   | Critical review of changes |
+| `/pr-workflow:decide [repo]`   | Tech lead prioritization   |
+| `/pr-workflow:fix [repo]`      | Implement MUST FIX items   |
+| `/pr-workflow:workflow [repo]` | Full automated workflow    |
 
 ### Quick Start
 
 ```
-/pr-workflow              # Run full workflow on current repo
-/pr-workflow api          # Run on 'api' subdirectory (multi-repo)
+/pr-workflow:workflow              # Run full workflow on current repo
+/pr-workflow:workflow api          # Run on 'api' subdirectory (multi-repo)
 ```
 
 Or step-by-step:
 
 ```
-/pr-describe    # Generate description
-/pr-review      # Get critical review
-/pr-decide      # Tech lead priorities
-/pr-fix         # Implement fixes
+/pr-workflow:describe    # Generate description
+/pr-workflow:review      # Get critical review
+/pr-workflow:decide      # Tech lead priorities
+/pr-workflow:fix         # Implement fixes
 ```
 
 ### Smart Context Detection

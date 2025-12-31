@@ -13,16 +13,19 @@ description: Tech lead prioritization - decide MUST FIX vs FOLLOW-UP
 **Arguments: $ARGUMENTS**
 
 **If in a git repository (single-repo context):**
+
 - Use the Task tool with `subagent_type: "pr-tech-lead"` directly
 
 **If in a multi-repo workspace:**
+
 - Parse the first argument as the repository name
 - If no repository specified, ask the user which one
 - `cd` into that repository first, then invoke the agent
 
-If a critical review was provided, use it. Otherwise, suggest running `/pr-workflow:pr-review` first.
+If a critical review was provided, use it. Otherwise, suggest running `/pr-workflow:review` first.
 
 Output a decision document with:
+
 1. MUST FIX IN THIS PR
 2. NICE TO HAVE (IF QUICK)
 3. FOLLOW-UP / SEPARATE PR

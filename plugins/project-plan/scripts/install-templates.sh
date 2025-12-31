@@ -67,6 +67,6 @@ fi
 
 echo ""
 echo "Next steps:"
-echo "  1. Run /new <project-name> to create project documentation"
-echo "  2. Run /work <project-slug> to work through tasks"
-echo "  3. Run /status to check progress"
+echo "  1. Run /project-plan:new <project-name> to create project documentation"
+echo "  2. Run /project-plan:work <project-slug> to work through tasks"
+echo "  3. Run /project-plan:status to check progress"

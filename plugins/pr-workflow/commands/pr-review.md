@@ -13,16 +13,19 @@ description: Run critical review on current PR changes
 **Arguments: $ARGUMENTS**
 
 **If in a git repository (single-repo context):**
+
 - Use the Task tool with `subagent_type: "pr-critical-reviewer"` directly
 
 **If in a multi-repo workspace:**
+
 - Parse the first argument as the repository name
 - If no repository specified, ask the user which one
 - `cd` into that repository first, then invoke the agent
 
-If a PR description was provided, pass it to the reviewer. Otherwise, suggest running `/pr-workflow:pr-describe` first.
+If a PR description was provided, pass it to the reviewer. Otherwise, suggest running `/pr-workflow:describe` first.
 
 Produce a structured review with:
+
 - Blocking issues (MUST FIX)
 - Strong recommendations (SHOULD FIX)
 - Non-blocking suggestions (NICE TO HAVE)
