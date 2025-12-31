@@ -50,7 +50,7 @@ When team members trust the repository folder, Claude Code prompts them to insta
 ### Local Development
 
 ```bash
-claude --plugin-dir /path/to/claude-project-workflows
+claude --plugin-dir /path/to/plan-smart  # or other plugin root
 ```
 
 ### Updates
@@ -71,12 +71,12 @@ Update plugin:
 
 ## Commands
 
-| Command          | Description                                          |
-| ---------------- | ---------------------------------------------------- |
-| `/setup`         | Initialize templates in `.agent-project-docs/`       |
-| `/init <name>`   | Create project documentation for a feature/task      |
-| `/cycle <slug>`  | Autonomous work loop with progress updates           |
-| `/status [slug]` | Show project progress (all projects if no slug)      |
+| Command          | Description                                     |
+| ---------------- | ----------------------------------------------- |
+| `/setup`         | Initialize templates in `.agent-project-docs/`  |
+| `/init <name>`   | Create project documentation for a feature/task |
+| `/cycle <slug>`  | Autonomous work loop with progress updates      |
+| `/status [slug]` | Show project progress (all projects if no slug) |
 
 ## Quick Start
 
