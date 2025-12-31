@@ -205,7 +205,7 @@ Summarize: what's done, current state, next priority.
 
 ✅ **Use for:**
 
-- Multi-day projects (3+ hours of work)
+- Substantial projects (3+ hours of work)
 - 10+ files to modify
 - Unclear scope needing research
 - Complex refactoring across modules

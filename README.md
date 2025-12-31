@@ -11,16 +11,54 @@ A Claude Code plugin that provides structured project documentation and task man
 
 ## Installation
 
-### From Local Directory
+### From GitHub
+
+First, add the repository as a marketplace:
+
+```bash
+/plugin marketplace add joshlebed/claude-project-workflows
+```
+
+Then install the plugin:
+
+```bash
+/plugin install claude-project-workflows@joshlebed/claude-project-workflows
+```
+
+### Team Sharing
+
+To share the plugin with your team, add this to your project's `.claude/settings.json`:
+
+```json
+{
+  "extraKnownMarketplaces": {
+    "project-workflows": {
+      "source": {
+        "source": "github",
+        "repo": "joshlebed/claude-project-workflows"
+      }
+    }
+  },
+  "enabledPlugins": {
+    "claude-project-workflows@project-workflows": true
+  }
+}
+```
+
+When team members trust the repository folder, Claude Code automatically prompts them to install the marketplace and plugin.
+
+### From Local Directory (Development)
 
 ```bash
 claude --plugin-dir /path/to/claude-project-workflows
 ```
 
-### From GitHub (once published)
+### Updates
+
+To get plugin updates:
 
 ```bash
-/plugin install joshlebed/claude-project-workflows
+/plugin marketplace update project-workflows
 ```
 
 ## Commands
@@ -47,9 +85,9 @@ This creates:
 ```
 .agent-project-docs/
 └── _templates/
-    ├── CODE_AGENT_QUICK_START.md
     ├── INDEX_TEMPLATE.md
     ├── NEXT_STEPS_TEMPLATE.md
+    ├── PROGRESS_TEMPLATE.md
     └── README.md
 ```
 
@@ -136,7 +174,7 @@ Detailed task instructions with:
 
 ### When to Use This Plugin
 
-- Multi-day projects (3+ hours of work)
+- Substantial projects (3+ hours of work)
 - 10+ files to modify
 - Complex refactoring across modules
 - Projects spanning multiple sessions
@@ -179,9 +217,9 @@ claude-project-workflows/
 │   ├── project-cycle.md     # Autonomous work loop
 │   └── project-status.md    # Show progress
 ├── templates/
-│   ├── CODE_AGENT_QUICK_START.md
 │   ├── INDEX_TEMPLATE.md
 │   ├── NEXT_STEPS_TEMPLATE.md
+│   ├── PROGRESS_TEMPLATE.md
 │   └── README.md
 ├── scripts/
 │   └── install-templates.sh # Manual template installer
