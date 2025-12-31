@@ -1,33 +1,32 @@
-# plan-smart
+# claude-extras
 
-Smart project planning for AI coding agents. Create structured docs, track progress, and run autonomous work cycles.
+A plugin marketplace for Claude Code with useful workflow automation plugins.
 
-## What This Plugin Does
+## Plugins
 
-- **Structured Project Planning**: Create organized documentation with INDEX.md, PROGRESS.md, and NEXT_STEPS.md
-- **Autonomous Work Cycles**: Run `/cycle` to let Claude work through tasks with built-in checkpoints
-- **Progress Tracking**: Always know what's done and what's next with `/status`
-- **Pattern-Based Implementation**: Document codebase patterns so Claude follows existing conventions
+| Plugin                      | Description                                   |
+| --------------------------- | --------------------------------------------- |
+| [plan-smart](#plan-smart)   | Smart project planning for AI coding agents   |
+| [pr-workflow](#pr-workflow) | Automated PR workflow with specialized agents |
 
 ## Installation
 
-### From GitHub
-
-Add the marketplace:
+### Add the Marketplace
 
 ```bash
 /plugin marketplace add joshlebed/claude-extras
 ```
 
-Install the plugin:
+### Install Plugins
 
 ```bash
 /plugin install plan-smart@claude-extras
+/plugin install pr-workflow@claude-extras
 ```
 
 ### Team Sharing
 
-Add this to your project's `.claude/settings.json`:
+Add to your project's `.claude/settings.json`:
 
 ```json
 {
@@ -40,131 +39,43 @@ Add this to your project's `.claude/settings.json`:
     }
   },
   "enabledPlugins": {
-    "plan-smart@claude-extras": true
+    "plan-smart@claude-extras": true,
+    "pr-workflow@claude-extras": true
   }
 }
 ```
 
-When team members trust the repository folder, Claude Code prompts them to install.
-
-### Local Development
-
-```bash
-claude --plugin-dir /path/to/plan-smart  # or other plugin root
-```
-
 ### Updates
-
-Refresh marketplace:
 
 ```bash
 /plugin marketplace update claude-extras
-```
-
-Update plugin:
-
-```bash
 /plugin update plan-smart@claude-extras
+/plugin update pr-workflow@claude-extras
 ```
 
-**Note:** Third-party marketplaces have auto-update disabled by default. Enable via `/plugin` UI under Marketplaces tab.
+---
 
-## Commands
+## plan-smart
+
+Smart project planning for AI coding agents. Create structured docs, track progress, and run autonomous work cycles.
+
+### Commands
 
 | Command          | Description                                     |
 | ---------------- | ----------------------------------------------- |
 | `/setup`         | Initialize templates in `.agent-project-docs/`  |
 | `/init <name>`   | Create project documentation for a feature/task |
 | `/cycle <slug>`  | Autonomous work loop with progress updates      |
-| `/status [slug]` | Show project progress (all projects if no slug) |
+| `/status [slug]` | Show project progress                           |
 
-## Quick Start
-
-### 1. Set Up Templates
+### Quick Start
 
 ```
-/setup
+/setup                           # Initialize templates
+/init Add User Authentication    # Create project docs
+/cycle add-user-authentication   # Work through tasks
+/status                          # Check progress
 ```
-
-Creates:
-
-```
-.agent-project-docs/
-└── _templates/
-    ├── INDEX_TEMPLATE.md
-    ├── NEXT_STEPS_TEMPLATE.md
-    ├── PROGRESS_TEMPLATE.md
-    └── README.md
-```
-
-### 2. Initialize a Project
-
-```
-/init Add User Authentication
-```
-
-Creates:
-
-```
-.agent-project-docs/
-├── _templates/
-└── add-user-authentication/
-    ├── INDEX.md      # Quick start + patterns
-    ├── PROGRESS.md   # Task tracking
-    └── NEXT_STEPS.md # Detailed instructions (if 10+ tasks)
-```
-
-### 3. Work Through Tasks
-
-```
-/cycle add-user-authentication
-```
-
-Claude will:
-
-1. Read project documentation
-2. Pick the next priority task
-3. Implement changes
-4. Update progress
-5. Stop for checkpoint after 5 tasks or when blocked
-
-### 4. Check Progress
-
-```
-/status add-user-authentication
-```
-
-Or see all projects:
-
-```
-/status
-```
-
-## Documentation Structure
-
-### INDEX.md (Always Created)
-
-- Quick start instructions
-- Implementation patterns from YOUR codebase
-- Available hooks/components/utilities
-- Success criteria
-
-### PROGRESS.md (Always Created)
-
-- Completion percentage
-- Completed tasks (with dates)
-- In-progress tasks
-- Pending tasks (prioritized: High/Medium/Low)
-- Blockers and notes
-
-### NEXT_STEPS.md (For Complex Projects)
-
-- Exact file paths and line numbers
-- Code snippets (copy-paste ready)
-- Test cases per task
-- Implementation order
-
-## Best Practices
 
 ### When to Use
 
@@ -173,105 +84,87 @@ Or see all projects:
 - Complex refactoring across modules
 - Projects spanning multiple sessions
 
-### When NOT to Use
+[Full documentation](./templates/README.md)
 
-- Single file changes
-- Quick bug fixes (< 1 hour)
-- Simple find-and-replace operations
+---
 
-### Keeping Claude On Track
+## pr-workflow
 
-**After each task:**
+Automated PR workflow with specialized agents for description writing, critical review, tech lead decisions, and implementation.
+
+### Agents
+
+1. **pr-description-expert** - Generates detailed PR descriptions from git diff
+2. **pr-critical-reviewer** - Produces prioritized list of issues and risks
+3. **pr-tech-lead** - Decides MUST FIX vs FOLLOW-UP scope
+4. **pr-senior-engineer** - Implements required fixes
+
+### Commands
+
+| Command               | Description                |
+| --------------------- | -------------------------- |
+| `/pr-describe [repo]` | Generate PR description    |
+| `/pr-review [repo]`   | Critical review of changes |
+| `/pr-decide [repo]`   | Tech lead prioritization   |
+| `/pr-fix [repo]`      | Implement MUST FIX items   |
+| `/pr-workflow [repo]` | Full automated workflow    |
+
+### Quick Start
 
 ```
-Mark task X as complete in PROGRESS.md. Update percentage. Show what's next.
+/pr-workflow              # Run full workflow on current repo
+/pr-workflow api          # Run on 'api' subdirectory (multi-repo)
 ```
 
-**When priorities change:**
+Or step-by-step:
 
 ```
-Update PROGRESS.md: move [task] to high priority because [reason].
+/pr-describe    # Generate description
+/pr-review      # Get critical review
+/pr-decide      # Tech lead priorities
+/pr-fix         # Implement fixes
 ```
 
-**After context limit or break:**
+### Smart Context Detection
 
-```
-Read all files in @.agent-project-docs/<slug>/ starting with INDEX.md. Summarize what's done and what's next.
-```
+- **Single repo** (`.git` in cwd): Works immediately
+- **Multi-repo workspace**: Lists repos, accepts repo name as argument
 
-## Project Structure
+[Full documentation](./plugins/pr-workflow/README.md)
+
+---
+
+## Repository Structure
 
 ```
 claude-extras/
 ├── .claude-plugin/
-│   ├── marketplace.json     # Marketplace definition
-│   └── plugin.json          # Plugin metadata
-├── commands/
-│   ├── setup.md             # Initialize templates
-│   ├── init.md              # Create project docs
-│   ├── cycle.md             # Autonomous work loop
-│   └── status.md            # Show progress
-├── templates/
-│   ├── INDEX_TEMPLATE.md
-│   ├── NEXT_STEPS_TEMPLATE.md
-│   ├── PROGRESS_TEMPLATE.md
-│   └── README.md
+│   ├── marketplace.json        # Marketplace definition
+│   └── plugin.json             # plan-smart plugin metadata
+├── commands/                   # plan-smart commands
+│   ├── setup.md
+│   ├── init.md
+│   ├── cycle.md
+│   └── status.md
+├── templates/                  # plan-smart templates
+├── plugins/
+│   └── pr-workflow/            # pr-workflow plugin
+│       ├── .claude-plugin/
+│       │   └── plugin.json
+│       ├── agents/
+│       ├── commands/
+│       ├── hooks/
+│       └── README.md
 ├── scripts/
-│   └── install-templates.sh
 └── README.md
-```
-
-## Configuration
-
-### Excluding from Git
-
-Setup automatically adds `.agent-project-docs/` to `.gitignore`.
-
-To commit project docs (for team handoffs):
-
-```bash
-sed -i '' '/\.agent-project-docs/d' .gitignore
-```
-
-### Customizing Templates
-
-After `/setup`, edit files in `.agent-project-docs/_templates/`.
-
-## Troubleshooting
-
-### "Templates not found"
-
-Run `/setup` first.
-
-### "Project not found"
-
-Check the slug matches a directory:
-
-```bash
-ls .agent-project-docs/
-```
-
-### Progress not updating
-
-Remind Claude:
-
-```
-Update PROGRESS.md immediately after completing each task. Don't batch updates.
-```
-
-## How to Disable
-
-```bash
-/plugin uninstall plan-smart
 ```
 
 ## Contributing
 
 1. Fork the repository
 2. Make changes
-3. Test with `claude --plugin-dir ./claude-extras`
-4. Validate with `claude plugin validate .`
-5. Submit a pull request
+3. Test with `claude --plugin-dir ./` (for plan-smart) or `claude --plugin-dir ./plugins/pr-workflow` (for pr-workflow)
+4. Submit a pull request
 
 ## License
 
