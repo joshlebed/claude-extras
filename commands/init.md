@@ -15,7 +15,7 @@ Create project documentation for: **$ARGUMENTS**
 
 ### Prerequisites
 
-If `.agent-project-docs/_templates/` doesn't exist, run `/project-setup` first.
+If `.agent-project-docs/_templates/` doesn't exist, run `/setup` first.
 
 ### Step 1: Create Project Directory
 
@@ -80,4 +80,4 @@ Show:
 3. **PROGRESS.md**: Full contents
 4. **First 3 tasks**: What to do first
 
-Ask: "Ready to start with `/project-cycle <slug>`?"
+Ask: "Ready to start with `/cycle <slug>`?"

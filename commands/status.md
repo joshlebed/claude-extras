@@ -40,7 +40,7 @@ Read @.agent-project-docs/$ARGUMENTS/PROGRESS.md and show:
 - Blocker description
 
 ---
-Continue with: /project-cycle $ARGUMENTS
+Continue with: /cycle $ARGUMENTS
 ```
 
 ### For All Projects
@@ -55,5 +55,5 @@ If no argument provided, scan all project directories:
 | project-1 | 60% (6/10) | Implement X |
 | project-2 | 25% (2/8) | Fix Y |
 
-Use: /project-status <slug> for details
+Use: /status <slug> for details
 ```
