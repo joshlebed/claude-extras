@@ -47,11 +47,12 @@ Add to your project's `.claude/settings.json`:
 
 ### Updates
 
-You can turn on auto-updates for this marketplace with
+To enable auto-updates for plugins:
 
-```
-/plugin -> marketplace -> claude-extras -> enable auto-update
-```
+- Run `/plugin` to open the plugin manager
+- Select `Marketplaces`
+- Choose `claude-extras` from the list
+- Select `Enable auto-update`
 
 or update manually with:
 
