@@ -5,7 +5,7 @@
       "hooks": [
         {
           "type": "command",
-          "command": "jq -r '.tool_input.command // \"\"' | grep -qE '^gh pr create|^git push.*origin' && echo 'Tip: Consider running /pr-describe first to generate a PR description' >&2; exit 0"
+          "command": "jq -r '.tool_input.command // \"\"' | grep -qE '^gh pr create|^git push.*origin' && echo 'Tip: Consider running /pr-workflow:describe first to generate a PR description' >&2; exit 0"
         }
       ]
     }
