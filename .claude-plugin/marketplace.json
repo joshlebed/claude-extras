@@ -1,16 +1,16 @@
 {
-  "name": "project-workflows",
+  "name": "claude-extras",
   "owner": {
     "name": "Josh Lebedinsky"
   },
   "metadata": {
-    "description": "Project documentation and task management workflows for AI coding agents"
+    "description": "Useful plugins for Claude Code"
   },
   "plugins": [
     {
-      "name": "claude-project-workflows",
+      "name": "plan-smart",
       "source": "./",
-      "description": "Structured project planning, progress tracking, and autonomous work cycles"
+      "description": "Smart project planning for AI coding agents"
     }
   ]
 }

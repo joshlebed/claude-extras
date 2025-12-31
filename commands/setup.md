@@ -50,7 +50,7 @@ Report to the user:
 Project documentation structure initialized!
 
 Next steps:
-1. Run /project-init <project-name> to create documentation for a specific project
-2. Run /project-cycle <project-slug> to work through tasks
-3. Run /project-status [project-slug] to check progress
+1. Run /init <project-name> to create documentation for a specific project
+2. Run /cycle <project-slug> to work through tasks
+3. Run /status [project-slug] to check progress
 ```

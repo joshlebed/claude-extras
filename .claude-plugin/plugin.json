@@ -1,15 +1,15 @@
 {
-  "name": "claude-project-workflows",
+  "name": "plan-smart",
   "version": "1.0.0",
-  "description": "Project documentation and task management workflows for AI coding agents. Includes templates for structured project planning, progress tracking, and autonomous work cycles.",
+  "description": "Smart project planning for AI coding agents. Create structured docs, track progress, and run autonomous work cycles.",
   "author": {
     "name": "Josh Lebedinsky"
   },
   "license": "MIT",
   "keywords": [
+    "planning",
     "project-management",
     "documentation",
-    "templates",
     "workflows",
     "task-tracking"
   ],

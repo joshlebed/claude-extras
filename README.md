@@ -1,38 +1,38 @@
-# Claude Project Workflows
+# plan-smart
 
-A Claude Code plugin that provides structured project documentation and task management workflows for AI coding agents. This plugin helps you plan, track, and execute multi-task software projects with clear progress visibility.
+Smart project planning for AI coding agents. Create structured docs, track progress, and run autonomous work cycles.
 
 ## What This Plugin Does
 
-- **Structured Project Planning**: Create organized documentation for complex projects with templates for INDEX.md, PROGRESS.md, and NEXT_STEPS.md
-- **Autonomous Work Cycles**: Run `/project-cycle` to let Claude work through tasks with built-in checkpoints and progress updates
-- **Progress Tracking**: Always know what's done, what's in progress, and what's next with `/project-status`
+- **Structured Project Planning**: Create organized documentation with INDEX.md, PROGRESS.md, and NEXT_STEPS.md
+- **Autonomous Work Cycles**: Run `/cycle` to let Claude work through tasks with built-in checkpoints
+- **Progress Tracking**: Always know what's done and what's next with `/status`
 - **Pattern-Based Implementation**: Document codebase patterns so Claude follows existing conventions
 
 ## Installation
 
 ### From GitHub
 
-First, add the repository as a marketplace:
+Add the marketplace:
 
 ```bash
 /plugin marketplace add joshlebed/claude-project-workflows
 ```
 
-Then install the plugin:
+Install the plugin:
 
 ```bash
-/plugin install claude-project-workflows@joshlebed/claude-project-workflows
+/plugin install plan-smart@claude-extras
 ```
 
 ### Team Sharing
 
-To share the plugin with your team, add this to your project's `.claude/settings.json`:
+Add this to your project's `.claude/settings.json`:
 
 ```json
 {
   "extraKnownMarketplaces": {
-    "project-workflows": {
+    "claude-extras": {
       "source": {
         "source": "github",
         "repo": "joshlebed/claude-project-workflows"
@@ -40,14 +40,14 @@ To share the plugin with your team, add this to your project's `.claude/settings
     }
   },
   "enabledPlugins": {
-    "claude-project-workflows@project-workflows": true
+    "plan-smart@claude-extras": true
   }
 }
 ```
 
-When team members trust the repository folder, Claude Code automatically prompts them to install the marketplace and plugin.
+When team members trust the repository folder, Claude Code prompts them to install.
 
-### From Local Directory (Development)
+### Local Development
 
 ```bash
 claude --plugin-dir /path/to/claude-project-workflows
@@ -55,40 +55,38 @@ claude --plugin-dir /path/to/claude-project-workflows
 
 ### Updates
 
-To refresh marketplace metadata and check for updates:
+Refresh marketplace:
 
 ```bash
-/plugin marketplace update project-workflows
+/plugin marketplace update claude-extras
 ```
 
-To update the plugin itself:
+Update plugin:
 
 ```bash
-/plugin update claude-project-workflows@project-workflows
+/plugin update plan-smart@claude-extras
 ```
 
-**Auto-updates:** Third-party marketplaces have auto-update disabled by default. Users can enable auto-updates via the `/plugin` UI under the Marketplaces tab.
+**Note:** Third-party marketplaces have auto-update disabled by default. Enable via `/plugin` UI under Marketplaces tab.
 
 ## Commands
 
-| Command                  | Description                                                               |
-| ------------------------ | ------------------------------------------------------------------------- |
-| `/project-setup`         | Initialize `.agent-project-docs/_templates/` with documentation templates |
-| `/project-init <name>`   | Create project documentation for a new feature/task                       |
-| `/project-cycle <slug>`  | Autonomous work loop - implements tasks and updates progress              |
-| `/project-status [slug]` | Show project progress (all projects if no slug)                           |
+| Command          | Description                                          |
+| ---------------- | ---------------------------------------------------- |
+| `/setup`         | Initialize templates in `.agent-project-docs/`       |
+| `/init <name>`   | Create project documentation for a feature/task      |
+| `/cycle <slug>`  | Autonomous work loop with progress updates           |
+| `/status [slug]` | Show project progress (all projects if no slug)      |
 
 ## Quick Start
 
 ### 1. Set Up Templates
 
-Run `/project-setup` to initialize the template structure in your project:
-
 ```
-/project-setup
+/setup
 ```
 
-This creates:
+Creates:
 
 ```
 .agent-project-docs/
@@ -101,13 +99,11 @@ This creates:
 
 ### 2. Initialize a Project
 
-Start a new project with `/project-init`:
-
 ```
-/project-init Add User Authentication
+/init Add User Authentication
 ```
 
-This creates:
+Creates:
 
 ```
 .agent-project-docs/
@@ -120,10 +116,8 @@ This creates:
 
 ### 3. Work Through Tasks
 
-Start the autonomous work cycle:
-
 ```
-/project-cycle add-user-authentication
+/cycle add-user-authentication
 ```
 
 Claude will:
@@ -136,23 +130,19 @@ Claude will:
 
 ### 4. Check Progress
 
-View status anytime:
-
 ```
-/project-status add-user-authentication
+/status add-user-authentication
 ```
 
 Or see all projects:
 
 ```
-/project-status
+/status
 ```
 
 ## Documentation Structure
 
 ### INDEX.md (Always Created)
-
-The agent's entry point containing:
 
 - Quick start instructions
 - Implementation patterns from YOUR codebase
@@ -160,8 +150,6 @@ The agent's entry point containing:
 - Success criteria
 
 ### PROGRESS.md (Always Created)
-
-Live progress tracker with:
 
 - Completion percentage
 - Completed tasks (with dates)
@@ -171,8 +159,6 @@ Live progress tracker with:
 
 ### NEXT_STEPS.md (For Complex Projects)
 
-Detailed task instructions with:
-
 - Exact file paths and line numbers
 - Code snippets (copy-paste ready)
 - Test cases per task
@@ -180,7 +166,7 @@ Detailed task instructions with:
 
 ## Best Practices
 
-### When to Use This Plugin
+### When to Use
 
 - Substantial projects (3+ hours of work)
 - 10+ files to modify
@@ -218,20 +204,20 @@ Read all files in @.agent-project-docs/<slug>/ starting with INDEX.md. Summarize
 ```
 claude-project-workflows/
 ├── .claude-plugin/
-│   ├── marketplace.json     # Marketplace definition (for GitHub install)
+│   ├── marketplace.json     # Marketplace definition
 │   └── plugin.json          # Plugin metadata
 ├── commands/
-│   ├── project-setup.md     # Initialize templates
-│   ├── project-init.md      # Create project docs
-│   ├── project-cycle.md     # Autonomous work loop
-│   └── project-status.md    # Show progress
+│   ├── setup.md             # Initialize templates
+│   ├── init.md              # Create project docs
+│   ├── cycle.md             # Autonomous work loop
+│   └── status.md            # Show progress
 ├── templates/
 │   ├── INDEX_TEMPLATE.md
 │   ├── NEXT_STEPS_TEMPLATE.md
 │   ├── PROGRESS_TEMPLATE.md
 │   └── README.md
 ├── scripts/
-│   └── install-templates.sh # Manual template installer
+│   └── install-templates.sh
 └── README.md
 ```
 
@@ -239,28 +225,27 @@ claude-project-workflows/
 
 ### Excluding from Git
 
-The setup process automatically adds `.agent-project-docs/` to your `.gitignore`. Project documentation is typically ephemeral and not committed.
+Setup automatically adds `.agent-project-docs/` to `.gitignore`.
 
-If you want to commit project docs (for team handoffs), remove the `.gitignore` entry:
+To commit project docs (for team handoffs):
 
 ```bash
-# Remove from .gitignore
 sed -i '' '/\.agent-project-docs/d' .gitignore
 ```
 
 ### Customizing Templates
 
-After running `/project-setup`, edit files in `.agent-project-docs/_templates/` to customize for your team's workflow.
+After `/setup`, edit files in `.agent-project-docs/_templates/`.
 
 ## Troubleshooting
 
 ### "Templates not found"
 
-Run `/project-setup` first to initialize the template structure.
+Run `/setup` first.
 
 ### "Project not found"
 
-Check the project slug matches a directory in `.agent-project-docs/`:
+Check the slug matches a directory:
 
 ```bash
 ls .agent-project-docs/
@@ -276,13 +261,9 @@ Update PROGRESS.md immediately after completing each task. Don't batch updates.
 
 ## How to Disable
 
-Remove the plugin:
-
 ```bash
-/plugin uninstall claude-project-workflows
+/plugin uninstall plan-smart
 ```
-
-Or temporarily disable by removing from your settings.
 
 ## Contributing
 
@@ -295,7 +276,3 @@ Or temporarily disable by removing from your settings.
 ## License
 
 MIT
-
-## Credits
-
-Based on workflows developed for the Kepler development workspace.
