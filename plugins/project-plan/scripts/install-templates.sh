@@ -1,7 +1,7 @@
 #!/bin/bash
 #
 # Install project documentation templates into the current project
-# This script copies templates from the plugin to .agent-project-docs/_templates/
+# This script copies templates from the plugin to .project-plan/_templates/
 #
 # Usage: install-templates.sh [--force]
 #   --force: Overwrite existing templates without prompting
@@ -17,7 +17,7 @@ else
 fi
 
 TEMPLATES_SRC="${PLUGIN_ROOT}/templates"
-TEMPLATES_DST=".agent-project-docs/_templates"
+TEMPLATES_DST=".project-plan/_templates"
 
 # Check if templates source exists
 if [ ! -d "${TEMPLATES_SRC}" ]; then
@@ -52,21 +52,21 @@ ls -1 "${TEMPLATES_DST}/"
 # Optionally update .gitignore
 if command -v git &> /dev/null && git rev-parse --git-dir &> /dev/null 2>&1; then
     if [ -f .gitignore ]; then
-        if ! grep -q "^\.agent-project-docs/?$" .gitignore 2>/dev/null; then
+        if ! grep -q "^\.project-plan/?$" .gitignore 2>/dev/null; then
             echo "" >> .gitignore
-            echo ".agent-project-docs/" >> .gitignore
+            echo ".project-plan/" >> .gitignore
             echo ""
-            echo "Added .agent-project-docs/ to .gitignore"
+            echo "Added .project-plan/ to .gitignore"
         fi
     else
-        echo ".agent-project-docs/" > .gitignore
+        echo ".project-plan/" > .gitignore
         echo ""
-        echo "Created .gitignore with .agent-project-docs/"
+        echo "Created .gitignore with .project-plan/"
     fi
 fi
 
 echo ""
 echo "Next steps:"
-echo "  1. Run /project-init <project-name> to create project documentation"
-echo "  2. Run /project-cycle <project-slug> to work through tasks"
-echo "  3. Run /project-status to check progress"
+echo "  1. Run /new <project-name> to create project documentation"
+echo "  2. Run /work <project-slug> to work through tasks"
+echo "  3. Run /status to check progress"

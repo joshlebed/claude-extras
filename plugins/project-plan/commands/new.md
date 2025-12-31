@@ -1,21 +1,19 @@
 ---
 allowed-tools: Bash, Read, Write, Glob, Grep, Task
 argument-hint: <project-name>
-description: Create project documentation from templates
+description: Create project documentation for a feature or task
 ---
 
 ## Context
 
-- Templates location: @.agent-project-docs/\_templates/
-- Existing projects: !`ls -d .agent-project-docs/*/ 2>/dev/null | grep -v _templates | xargs -I {} basename {} 2>/dev/null || echo "none"`
+- Ensure templates are installed:
+  !`test -d .project-plan/_templates || bash "${CLAUDE_PLUGIN_ROOT}/scripts/install-templates.sh"`
+- Templates location: @.project-plan/\_templates/
+- Existing projects: !`ls -d .project-plan/*/ 2>/dev/null | grep -v _templates | xargs -I {} basename {} 2>/dev/null || echo "none"`
 
 ## Your Task
 
 Create project documentation for: **$ARGUMENTS**
-
-### Prerequisites
-
-If `.agent-project-docs/_templates/` doesn't exist, run `/setup` first.
 
 ### Step 1: Create Project Directory
 
@@ -25,17 +23,17 @@ Generate a slug from the project name (lowercase, hyphens, no spaces):
 - "Add User Auth" -> `add-user-auth`
 
 ```bash
-mkdir -p .agent-project-docs/<project-slug>
+mkdir -p .project-plan/<project-slug>
 ```
 
 ### Step 2: Read Templates
 
 Read these template files:
 
-- @.agent-project-docs/\_templates/README.md - Best practices guide
-- @.agent-project-docs/\_templates/INDEX_TEMPLATE.md - INDEX.md template
-- @.agent-project-docs/\_templates/PROGRESS_TEMPLATE.md - PROGRESS.md template
-- @.agent-project-docs/\_templates/NEXT_STEPS_TEMPLATE.md - NEXT_STEPS.md template (for complex projects)
+- @.project-plan/\_templates/README.md - Best practices guide
+- @.project-plan/\_templates/INDEX_TEMPLATE.md - INDEX.md template
+- @.project-plan/\_templates/PROGRESS_TEMPLATE.md - PROGRESS.md template
+- @.project-plan/\_templates/NEXT_STEPS_TEMPLATE.md - NEXT_STEPS.md template (for complex projects)
 
 ### Step 3: Analyze the Codebase
 
@@ -80,4 +78,4 @@ Show:
 3. **PROGRESS.md**: Full contents
 4. **First 3 tasks**: What to do first
 
-Ask: "Ready to start with `/cycle <slug>`?"
+Ask: "Ready to start with `/work <slug>`?"

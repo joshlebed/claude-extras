@@ -7,9 +7,9 @@
 After exploring the codebase, ask your AI agent:
 
 ```
-Based on our conversation, create project documentation using the templates at @.agent-project-docs/_templates/
+Based on our conversation, create project documentation using the templates at @.project-plan/_templates/
 
-Name the project and create an appropriate directory (e.g., @.agent-project-docs/my-feature/).
+Name the project and create an appropriate directory (e.g., @.project-plan/my-feature/).
 Follow the best practices in the template README.
 Show me INDEX.md and PROGRESS.md when done.
 ```
@@ -39,7 +39,7 @@ Check the generated docs:
 ### 3. Start Implementation
 
 ```
-Follow INDEX.md in @.agent-project-docs/<project-slug>/ and implement the next priority task.
+Follow INDEX.md in @.project-plan/<project-slug>/ and implement the next priority task.
 Update PROGRESS.md and NEXT_STEPS.md after each task.
 If you need to ask the engineering team for clarification, more information, a decision, or a recommendation, ask as soon as possible before you continue.
 ```
@@ -47,10 +47,10 @@ If you need to ask the engineering team for clarification, more information, a d
 ### 4. Review and Update Documentation (Optional)
 
 ```
-Look at @.agent-project-docs/<project-slug>/INDEX.md, @.agent-project-docs/<project-slug>/PROGRESS.md, @.agent-project-docs/<project-slug>/NEXT_STEPS.md, and related files.
+Look at @.project-plan/<project-slug>/INDEX.md, @.project-plan/<project-slug>/PROGRESS.md, @.project-plan/<project-slug>/NEXT_STEPS.md, and related files.
 Given the current status of the project, is there anything that needs to be updated?
 If so, update the relevant files.
-If you need to update the plan, update @.agent-project-docs/<project-slug>/INDEX.md, @.agent-project-docs/<project-slug>/PROGRESS.md, and @.agent-project-docs/<project-slug>/NEXT_STEPS.md.
+If you need to update the plan, update @.project-plan/<project-slug>/INDEX.md, @.project-plan/<project-slug>/PROGRESS.md, and @.project-plan/<project-slug>/NEXT_STEPS.md.
 If you need to ask the engineering team for clarification, more information, a decision, or a recommendation, ask as soon as possible before you continue.
 ```
 
@@ -145,7 +145,7 @@ Document this pattern in PROGRESS.md so you remember.
 ### After context limit or long break:
 
 ```
-Read all files in @.agent-project-docs/<project-slug>/ starting with INDEX.md.
+Read all files in @.project-plan/<project-slug>/ starting with INDEX.md.
 Summarize: what's done, current state, next priority.
 ```
 
@@ -225,7 +225,7 @@ Summarize: what's done, current state, next priority.
 ### ❌ Bad (Too Much)
 
 ```
-.agent-project-docs/<project>/
+.project-plan/<project>/
 ├── INDEX.md
 ├── PROGRESS.md
 ├── PROJECT_OVERVIEW.md       ← Redundant with INDEX
@@ -240,7 +240,7 @@ Summarize: what's done, current state, next priority.
 ### ✅ Good (Focused)
 
 ```
-.agent-project-docs/<project>/
+.project-plan/<project>/
 ├── INDEX.md          ← Quick start + patterns
 ├── PROGRESS.md       ← Live tracking + decisions
 ├── NEXT_STEPS.md     ← Task-by-task guide (if complex)
@@ -253,7 +253,7 @@ Summarize: what's done, current state, next priority.
 
 ### 2025-12-23
 
-- Restructured to use `.agent-project-docs/` umbrella directory
+- Restructured to use `.project-plan/` umbrella directory
 - Templates now live in `_templates/` subdirectory
 - Updated all path references for new structure
 

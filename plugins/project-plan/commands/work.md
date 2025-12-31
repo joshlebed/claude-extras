@@ -6,8 +6,8 @@ description: Autonomous work+review loop for project tasks
 
 ## Context
 
-- Project: @.agent-project-docs/$ARGUMENTS/
-- Current status: !`grep -E "^\\*\\*Overall Status:\\*\\*|^## .* Progress|^- \\[x\\]|^- \\[ \\]" .agent-project-docs/$ARGUMENTS/PROGRESS.md 2>/dev/null | head -10 || echo "Project not found"`
+- Project: @.project-plan/$ARGUMENTS/
+- Current status: !`grep -E "^\\*\\*Overall Status:\\*\\*|^## .* Progress|^- \\[x\\]|^- \\[ \\]" .project-plan/$ARGUMENTS/PROGRESS.md 2>/dev/null | head -10 || echo "Project not found"`
 
 ## Your Task
 
@@ -15,9 +15,9 @@ Work through tasks in **$ARGUMENTS** project, cycling between implementation and
 
 ### Before Starting
 
-1. Read @.agent-project-docs/$ARGUMENTS/INDEX.md - Understand patterns and tools
-2. Read @.agent-project-docs/$ARGUMENTS/PROGRESS.md - Find next pending task
-3. Read @.agent-project-docs/$ARGUMENTS/NEXT_STEPS.md (if exists) - Get detailed instructions
+1. Read @.project-plan/$ARGUMENTS/INDEX.md - Understand patterns and tools
+2. Read @.project-plan/$ARGUMENTS/PROGRESS.md - Find next pending task
+3. Read @.project-plan/$ARGUMENTS/NEXT_STEPS.md (if exists) - Get detailed instructions
 
 ### Work Cycle
 
