@@ -34,9 +34,9 @@ The script creates:
 ```
 .agent-project-docs/
 └── _templates/
-    ├── CODE_AGENT_QUICK_START.md  # Instructions for planning agents
     ├── INDEX_TEMPLATE.md          # Template for project INDEX.md
     ├── NEXT_STEPS_TEMPLATE.md     # Template for detailed task tracking
+    ├── PROGRESS_TEMPLATE.md       # Template for progress tracking
     └── README.md                  # Human guide for using templates
 ```
 

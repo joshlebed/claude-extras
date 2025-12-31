@@ -34,7 +34,8 @@ Read these template files:
 
 - @.agent-project-docs/\_templates/README.md - Best practices guide
 - @.agent-project-docs/\_templates/INDEX_TEMPLATE.md - INDEX.md template
-- @.agent-project-docs/\_templates/NEXT_STEPS_TEMPLATE.md - NEXT_STEPS.md template
+- @.agent-project-docs/\_templates/PROGRESS_TEMPLATE.md - PROGRESS.md template
+- @.agent-project-docs/\_templates/NEXT_STEPS_TEMPLATE.md - NEXT_STEPS.md template (for complex projects)
 
 ### Step 3: Analyze the Codebase
 
