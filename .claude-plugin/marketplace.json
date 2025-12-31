@@ -9,7 +9,7 @@
   "plugins": [
     {
       "name": "claude-project-workflows",
-      "source": ".",
+      "source": "./",
       "description": "Structured project planning, progress tracking, and autonomous work cycles"
     }
   ]
