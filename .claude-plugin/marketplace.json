@@ -1,10 +1,16 @@
 {
   "name": "project-workflows",
-  "description": "Project documentation and task management workflows for AI coding agents",
+  "owner": {
+    "name": "Josh Lebed"
+  },
+  "metadata": {
+    "description": "Project documentation and task management workflows for AI coding agents"
+  },
   "plugins": [
     {
       "name": "claude-project-workflows",
-      "path": "."
+      "source": ".",
+      "description": "Structured project planning, progress tracking, and autonomous work cycles"
     }
   ]
 }
