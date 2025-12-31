@@ -210,6 +210,7 @@ Read all files in @.agent-project-docs/<slug>/ starting with INDEX.md. Summarize
 ```
 claude-project-workflows/
 ├── .claude-plugin/
+│   ├── marketplace.json     # Marketplace definition (for GitHub install)
 │   └── plugin.json          # Plugin metadata
 ├── commands/
 │   ├── project-setup.md     # Initialize templates
