@@ -1,0 +1,10 @@
+{
+  "name": "project-workflows",
+  "description": "Project documentation and task management workflows for AI coding agents",
+  "plugins": [
+    {
+      "name": "claude-project-workflows",
+      "path": "."
+    }
+  ]
+}
