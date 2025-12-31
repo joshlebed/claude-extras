@@ -55,11 +55,19 @@ claude --plugin-dir /path/to/claude-project-workflows
 
 ### Updates
 
-To get plugin updates:
+To refresh marketplace metadata and check for updates:
 
 ```bash
 /plugin marketplace update project-workflows
 ```
+
+To update the plugin itself:
+
+```bash
+/plugin update claude-project-workflows@project-workflows
+```
+
+**Auto-updates:** Third-party marketplaces have auto-update disabled by default. Users can enable auto-updates via the `/plugin` UI under the Marketplaces tab.
 
 ## Commands
 
