@@ -1,0 +1,18 @@
+{
+  "name": "claude-project-workflows",
+  "version": "1.0.0",
+  "description": "Project documentation and task management workflows for AI coding agents. Includes templates for structured project planning, progress tracking, and autonomous work cycles.",
+  "author": "Josh Lebed",
+  "license": "MIT",
+  "keywords": [
+    "project-management",
+    "documentation",
+    "templates",
+    "workflows",
+    "task-tracking"
+  ],
+  "homepage": "https://github.com/joshlebed/claude-project-workflows",
+  "repository": "https://github.com/joshlebed/claude-project-workflows",
+  "commands": "commands",
+  "scripts": "scripts"
+}
