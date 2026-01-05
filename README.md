@@ -72,7 +72,7 @@ Project planning for AI coding agents. Create structured docs, track progress, a
 
 | Command                       | Description                                     |
 | ----------------------------- | ----------------------------------------------- |
-| `/project-plan:new <name>`    | Create project documentation for a feature/task |
+| `/project-plan:new <prompt>`  | Create project documentation for a feature/task |
 | `/project-plan:work <slug>`   | Autonomous work loop with progress updates      |
 | `/project-plan:status [slug]` | Show project progress                           |
 
@@ -82,6 +82,19 @@ Project planning for AI coding agents. Create structured docs, track progress, a
 /project-plan:new Add User Authentication    # Create project docs
 /project-plan:work add-user-authentication   # Work through tasks
 /project-plan:status                         # Check progress
+```
+
+The `new` command accepts a prompt that can include both a project name and additional instructions:
+
+```
+# Just a project name
+/project-plan:new Add User Authentication
+
+# Project name with additional context
+/project-plan:new Add User Authentication. Use OAuth2 and follow the existing auth middleware pattern.
+
+# Reference prior conversation
+/project-plan:new Implement the caching layer we discussed. Focus on Redis first, skip memcached.
 ```
 
 ### When to Use
