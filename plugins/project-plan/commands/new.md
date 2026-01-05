@@ -1,6 +1,6 @@
 ---
 allowed-tools: Bash, Read, Write, Glob, Grep, Task
-argument-hint: <project-name>
+argument-hint: <prompt>
 description: Create project documentation for a feature or task
 ---
 
@@ -13,14 +13,23 @@ description: Create project documentation for a feature or task
 
 ## Your Task
 
-Create project documentation for: **$ARGUMENTS**
+Create project documentation based on this prompt: **$ARGUMENTS**
+
+The prompt above may contain:
+- A project name/title (required)
+- Additional instructions, preferences, or context from prior conversation (optional)
+
+Examples:
+- "Add User Authentication" - just a project name
+- "Add User Authentication. Use OAuth2 and follow the existing auth middleware pattern." - project name with refinements
+- "Implement the caching layer we discussed. Focus on Redis first, skip memcached for now." - references prior conversation
 
 ### Step 1: Create Project Directory
 
-Generate a slug from the project name (lowercase, hyphens, no spaces):
+Extract the project name from the prompt and generate a slug (lowercase, hyphens, no spaces):
 
 - "My New Feature" -> `my-new-feature`
-- "Add User Auth" -> `add-user-auth`
+- "Add User Auth. Use OAuth2..." -> `add-user-auth`
 
 ```bash
 mkdir -p .project-plan/<project-slug>
@@ -37,12 +46,14 @@ Read these template files:
 
 ### Step 3: Analyze the Codebase
 
-Based on our conversation context, explore the codebase to understand:
+Based on the prompt and any prior conversation context, explore the codebase to understand:
 
 - Current patterns and architecture
 - Files that will need changes
 - Existing similar implementations to follow
 - Dependencies and constraints
+
+**Important:** If the prompt includes specific instructions, preferences, or constraints (e.g., "use OAuth2", "skip feature X", "follow pattern Y"), incorporate these into your analysis and planning.
 
 ### Step 4: Create Documentation Files
 
@@ -53,6 +64,7 @@ Based on our conversation context, explore the codebase to understand:
    - Real implementation patterns from THIS codebase (not generic examples)
    - Actual hooks/components/utilities with import paths
    - Project-specific success criteria
+   - Any constraints or preferences specified in the user's prompt
    - Remove the "Instructions for Planning Agent" section
 
 2. **PROGRESS.md** - Create with:
