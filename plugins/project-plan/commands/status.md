@@ -7,6 +7,7 @@ description: Show current project progress
 ## Context
 
 - Available projects: !`ls -d .project-plan/*/ 2>/dev/null | grep -v _templates | xargs -I {} basename {} 2>/dev/null || echo "none"`
+- Active work loop: !`test -f .claude/project-plan-loop.local.md && grep '^project_slug:' .claude/project-plan-loop.local.md | sed 's/project_slug: *//' || echo "none"`
 
 ## Your Task
 
@@ -23,6 +24,7 @@ Read @.project-plan/$ARGUMENTS/PROGRESS.md and show:
 
 **Status:** X% complete (X/Y tasks)
 **Last Updated:** YYYY-MM-DD
+**Work Loop:** Active (iteration N) / Not active
 
 ### Completed
 - Task 1
@@ -41,7 +43,10 @@ Read @.project-plan/$ARGUMENTS/PROGRESS.md and show:
 
 ---
 Continue with: /project-plan:work $ARGUMENTS
+Cancel loop:   /project-plan:cancel
 ```
+
+To check if work loop is active for this project, check if `.claude/project-plan-loop.local.md` exists and contains this project's slug.
 
 ### For All Projects
 
@@ -50,10 +55,10 @@ If no argument provided, scan all project directories:
 ```
 ## Active Projects
 
-| Project | Status | Next Task |
-|---------|--------|-----------|
-| project-1 | 60% (6/10) | Implement X |
-| project-2 | 25% (2/8) | Fix Y |
+| Project | Status | Next Task | Work Loop |
+|---------|--------|-----------|-----------|
+| project-1 | 60% (6/10) | Implement X | Active |
+| project-2 | 25% (2/8) | Fix Y | - |
 
 Use: /project-plan:status <slug> for details
 ```

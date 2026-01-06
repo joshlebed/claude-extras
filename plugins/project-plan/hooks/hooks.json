@@ -1,12 +1,11 @@
 {
   "hooks": {
-    "SubagentStop": [
+    "Stop": [
       {
         "hooks": [
           {
-            "type": "prompt",
-            "prompt": "You are evaluating whether a subagent should stop.\n\nContext: $ARGUMENTS\n\n**FIRST: Check if this is the work-agent from project-plan plugin.**\nLook for indicators in the context:\n- Agent name or description mentions 'work-agent'\n- Working on .project-plan/ directory\n- Mentions PROGRESS.md, INDEX.md, NEXT_STEPS.md\n\nIf this is NOT work-agent → {\"decision\": \"approve\", \"reason\": \"Not work-agent, allow stop\"}\n\nIf this IS work-agent, analyze:\n\n1. **Has the agent encountered a REAL blocker?**\n   - Decision/clarification needed from user?\n   - External dependency missing?\n   - Unfixable test/build failure?\n   - All tasks complete?\n\n2. **Or is this just a progress checkpoint?**\n   - Completed some tasks but more remain?\n   - Routine status update?\n   - Hit arbitrary task count limit?\n\nIf the agent:\n- Has a REAL blocker → {\"decision\": \"approve\", \"reason\": \"Valid blocker: [description]\"}\n- Just completed tasks with more pending → {\"decision\": \"block\", \"reason\": \"Continue with next pending task from PROGRESS.md\"}\n- Needs user decision on approach → {\"decision\": \"approve\", \"reason\": \"Needs user input: [question]\"}\n\nIMPORTANT: Do NOT approve stops for task count milestones or routine checkpoints. Only approve for genuine blockers.\n\nRespond with JSON only: {\"decision\": \"approve\" or \"block\", \"reason\": \"explanation\"}",
-            "timeout": 30
+            "type": "command",
+            "command": "${CLAUDE_PLUGIN_ROOT}/hooks/stop-hook.sh"
           }
         ]
       }

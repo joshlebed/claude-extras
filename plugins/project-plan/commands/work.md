@@ -1,27 +1,56 @@
 ---
-allowed-tools: Task
-argument-hint: <project-slug>
-description: Autonomous work loop for project tasks
+allowed-tools: Bash(${CLAUDE_PLUGIN_ROOT}/scripts/setup-work-loop.sh *)
+argument-hint: "[project-slug]"
+description: Start work loop (auto-selects most recent project if no slug)
 ---
 
-## Context
+## Setup Work Loop
 
-- Project: @.project-plan/$ARGUMENTS/
-- Current status: !`grep -E "^\\*\\*Overall Status:\\*\\*|^## .* Progress|^- \\[x\\]|^- \\[ \\]" .project-plan/$ARGUMENTS/PROGRESS.md 2>/dev/null | head -10 || echo "Project not found"`
+Run the setup script to activate the work loop:
 
-## Your Task
+```bash
+${CLAUDE_PLUGIN_ROOT}/scripts/setup-work-loop.sh $ARGUMENTS
+```
 
-Launch the autonomous work agent for the **$ARGUMENTS** project.
+If no project slug is provided, the script auto-selects the most recently edited project and tells you which one.
 
-Use the Task tool with:
-- subagent_type: "work-agent"
-- prompt: "Work on project at .project-plan/$ARGUMENTS/. The project files are in .project-plan/$ARGUMENTS/ including INDEX.md, PROGRESS.md, and NEXT_STEPS.md. Continue working through tasks until you encounter real blockers or questions that require user input."
+After setup completes, the Stop hook will keep you in a continuous work loop until all tasks in PROGRESS.md are complete.
 
-The work-agent will:
-1. Read project documentation (INDEX.md, PROGRESS.md, NEXT_STEPS.md)
-2. Work through tasks continuously
-3. Update progress documentation after each task
-4. Only stop when hitting real blockers or needing user input
-5. Provide checkpoint updates every 3 tasks (but keep working)
+## Your First Task
 
-Simply launch the agent and let it run autonomously.
+Once the loop is active, the script output tells you which project was selected. Begin working:
+
+1. **Read Current State**
+   - Read the project's `PROGRESS.md` to find the highest priority PENDING task
+   - Read the project's `INDEX.md` for patterns and constraints
+   - Read `NEXT_STEPS.md` if it exists for detailed instructions
+
+2. **Implement**
+   - Implement the task following project patterns
+   - Run tests/lint as specified in INDEX.md
+   - Keep changes focused
+
+3. **Update Documentation**
+   - Mark task complete in PROGRESS.md (change `- [ ]` to `- [x]`)
+   - Update completion count
+   - Add any new tasks discovered
+   - Update INDEX.md if patterns changed
+
+4. **Continue**
+   - When you try to stop, the hook feeds the work prompt back automatically
+   - Loop continues until all tasks are marked complete
+
+## When to Ask for Input
+
+Use **AskUserQuestion** when you encounter:
+- Multiple valid approaches needing user preference
+- Ambiguous requirements
+- Missing dependencies/credentials
+- Unresolvable failures
+- Architectural decisions needing team input
+
+After asking, continue working on the next task.
+
+## Canceling
+
+Use `/project-plan:cancel` to stop the loop early.
