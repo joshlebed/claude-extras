@@ -73,8 +73,9 @@ Project planning for AI coding agents. Create structured docs, track progress, a
 | Command                       | Description                                     |
 | ----------------------------- | ----------------------------------------------- |
 | `/project-plan:new <prompt>`  | Create project documentation for a feature/task |
-| `/project-plan:work <slug>`   | Autonomous work loop with progress updates      |
+| `/project-plan:work [slug]`   | Start work loop (auto-selects most recent project) |
 | `/project-plan:status [slug]` | Show project progress                           |
+| `/project-plan:cancel`        | Cancel active work loop                         |
 
 ### Quick Start
 
@@ -165,8 +166,9 @@ claude-extras/
 │   │   ├── .claude-plugin/
 │   │   │   └── plugin.json
 │   │   ├── commands/
-│   │   ├── templates/
-│   │   └── scripts/
+│   │   ├── hooks/
+│   │   ├── scripts/
+│   │   └── templates/
 │   └── pr-workflow/            # pr-workflow plugin
 │       ├── .claude-plugin/
 │       │   └── plugin.json
