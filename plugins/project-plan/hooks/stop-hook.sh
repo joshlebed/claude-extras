@@ -23,9 +23,10 @@ parse_frontmatter() {
   sed -n '/^---$/,/^---$/{ /^---$/d; p; }' "$file" | grep "^${key}:" | sed "s/${key}: *//" | tr -d '"'
 }
 
-# Find the project bound to THIS session
+# Find the project bound to THIS session (or one waiting to be bound)
 PROJECT_SLUG=""
 STATE_FILE=""
+NEEDS_BINDING=""
 
 if [[ -d ".project-plan" ]]; then
   for dir in .project-plan/*/; do
@@ -33,12 +34,27 @@ if [[ -d ".project-plan" ]]; then
     if [[ -f "$local_state" ]]; then
       file_session=$(parse_frontmatter "$local_state" "session_id")
       if [[ "$file_session" == "$SESSION_ID" ]]; then
+        # Already bound to this session
         PROJECT_SLUG=$(basename "$dir")
         STATE_FILE="$local_state"
+        break
+      elif [[ "$file_session" == "pending-bind" ]]; then
+        # Waiting to be bound - claim it for this session
+        PROJECT_SLUG=$(basename "$dir")
+        STATE_FILE="$local_state"
+        NEEDS_BINDING="true"
         break
       fi
     fi
   done
+fi
+
+# Bind pending session if found
+if [[ -n "$NEEDS_BINDING" ]] && [[ -n "$STATE_FILE" ]]; then
+  # Update the session_id in the state file
+  TEMP_FILE="${STATE_FILE}.tmp.$$"
+  sed "s/^session_id: .*/session_id: \"$SESSION_ID\"/" "$STATE_FILE" > "$TEMP_FILE"
+  mv "$TEMP_FILE" "$STATE_FILE"
 fi
 
 # No active loop for this session - allow exit

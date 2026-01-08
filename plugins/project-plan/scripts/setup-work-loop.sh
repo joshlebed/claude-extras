@@ -13,13 +13,13 @@ else
     PLUGIN_ROOT="$(dirname "${SCRIPT_DIR}")"
 fi
 
-# Get session ID from environment (set by SessionStart hook)
+# Get session ID from environment (set by SessionStart hook via CLAUDE_ENV_FILE)
 SESSION_ID="${PROJECT_PLAN_SESSION_ID:-}"
+
+# If no session ID available, use a placeholder - the stop hook will bind the real session ID
+# on first stop attempt (the stop hook receives session_id in its input)
 if [[ -z "$SESSION_ID" ]]; then
-  echo "⚠️  Warning: No session ID available. Multi-instance isolation may not work." >&2
-  echo "   This can happen if the plugin was just installed. Try restarting Claude Code." >&2
-  # Generate a fallback ID for this session
-  SESSION_ID="fallback-$$-$(date +%s)"
+  SESSION_ID="pending-bind"
 fi
 
 # Parse arguments
@@ -96,6 +96,8 @@ parse_frontmatter() {
 }
 
 # Helper: Check if this session already has an active loop
+# Returns the project slug if found, exits 1 otherwise
+# When SESSION_ID is "pending-bind", also matches existing pending-bind loops
 find_session_loop() {
   local session="$1"
   if [[ ! -d ".project-plan" ]]; then
@@ -106,6 +108,7 @@ find_session_loop() {
     if [[ -f "$state_file" ]]; then
       local file_session
       file_session=$(parse_frontmatter "$state_file" "session_id")
+      # Match exact session ID, or match pending-bind if that's what we have
       if [[ "$file_session" == "$session" ]]; then
         basename "$dir"
         return 0
@@ -226,6 +229,7 @@ fi
 STATE_FILE="$PROJECT_DIR/loop-state.local.md"
 RESUMING=""
 ITERATION=1
+SKIP_STATE_UPDATE=""
 
 if [[ -f "$STATE_FILE" ]]; then
   EXISTING_SESSION=$(parse_frontmatter "$STATE_FILE" "session_id")
@@ -235,6 +239,12 @@ if [[ -f "$STATE_FILE" ]]; then
     # Same session - already handled above, but just in case
     ITERATION="${EXISTING_ITERATION:-1}"
     RESUMING=" (continuing)"
+  elif [[ "$SESSION_ID" == "pending-bind" ]] && [[ "$EXISTING_SESSION" != "pending-bind" ]]; then
+    # We have pending-bind but state file has a real session ID (already bound by stop hook)
+    # Don't overwrite - continue with existing binding
+    ITERATION="${EXISTING_ITERATION:-1}"
+    RESUMING=" (continuing)"
+    SKIP_STATE_UPDATE="true"
   else
     # Different session - this is a recovery/takeover scenario
     ITERATION="${EXISTING_ITERATION:-1}"
@@ -242,14 +252,16 @@ if [[ -f "$STATE_FILE" ]]; then
   fi
 fi
 
-# Create/update state file with session binding
-cat > "$STATE_FILE" <<EOF
+# Create/update state file with session binding (skip if already bound)
+if [[ -z "$SKIP_STATE_UPDATE" ]]; then
+  cat > "$STATE_FILE" <<EOF
 ---
 session_id: "$SESSION_ID"
 iteration: $ITERATION
 started_at: "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
 ---
 EOF
+fi
 
 # Get current task count for display
 TOTAL_TASKS=$(grep -cE '^\- \[ \]|^\- \[x\]' "$PROJECT_DIR/PROGRESS.md" 2>/dev/null || true)
