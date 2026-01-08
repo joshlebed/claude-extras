@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Project Plan Work Loop Setup Script
-# Creates state file for in-session work loop with Stop hook
+# Creates per-project state file with session binding for multi-instance support
 
 set -euo pipefail
 
@@ -11,6 +11,15 @@ if [ -n "${CLAUDE_PLUGIN_ROOT:-}" ]; then
 else
     SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
     PLUGIN_ROOT="$(dirname "${SCRIPT_DIR}")"
+fi
+
+# Get session ID from environment (set by SessionStart hook)
+SESSION_ID="${PROJECT_PLAN_SESSION_ID:-}"
+if [[ -z "$SESSION_ID" ]]; then
+  echo "⚠️  Warning: No session ID available. Multi-instance isolation may not work." >&2
+  echo "   This can happen if the plugin was just installed. Try restarting Claude Code." >&2
+  # Generate a fallback ID for this session
+  SESSION_ID="fallback-$$-$(date +%s)"
 fi
 
 # Parse arguments
@@ -39,19 +48,23 @@ DESCRIPTION:
 
   The loop AUTOMATICALLY STOPS when all tasks are marked complete in PROGRESS.md.
 
+MULTI-INSTANCE SUPPORT:
+  Multiple Claude instances can work on different projects simultaneously.
+  Each instance binds to its project via session ID - no conflicts.
+
 EXAMPLES:
   /project-plan:work                 # Auto-select most recent project
   /project-plan:work add-user-auth   # Specify project explicitly
 
 MONITORING:
-  # View current iteration:
-  grep '^iteration:' .claude/project-plan-loop.local.md
-
-  # View full state:
-  head -10 .claude/project-plan-loop.local.md
+  # View current state:
+  cat .project-plan/<slug>/loop-state.local.md
 
 CANCELING:
   Use /project-plan:cancel to stop the loop early.
+
+RECOVERY:
+  If Claude was force-quit, just run /project-plan:work again to resume.
 HELP_EOF
 }
 
@@ -75,16 +88,43 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
-# Check for existing active loop FIRST
-STATE_FILE=".claude/project-plan-loop.local.md"
-if [[ -f "$STATE_FILE" ]]; then
-  EXISTING_SLUG=$(sed -n '/^---$/,/^---$/{ /^---$/d; p; }' "$STATE_FILE" | grep '^project_slug:' | sed 's/project_slug: *//')
-  EXISTING_ITERATION=$(sed -n '/^---$/,/^---$/{ /^---$/d; p; }' "$STATE_FILE" | grep '^iteration:' | sed 's/iteration: *//')
+# Helper: Parse YAML frontmatter value from a file
+parse_frontmatter() {
+  local file="$1"
+  local key="$2"
+  sed -n '/^---$/,/^---$/{ /^---$/d; p; }' "$file" | grep "^${key}:" | sed "s/${key}: *//" | tr -d '"'
+}
 
-  if [[ -z "$PROJECT_SLUG" ]] || [[ "$PROJECT_SLUG" == "$EXISTING_SLUG" ]]; then
-    # No slug provided or same slug - continue with existing loop
-    PROJECT_SLUG="$EXISTING_SLUG"
+# Helper: Check if this session already has an active loop
+find_session_loop() {
+  local session="$1"
+  if [[ ! -d ".project-plan" ]]; then
+    return 1
+  fi
+  for dir in .project-plan/*/; do
+    local state_file="${dir}loop-state.local.md"
+    if [[ -f "$state_file" ]]; then
+      local file_session
+      file_session=$(parse_frontmatter "$state_file" "session_id")
+      if [[ "$file_session" == "$session" ]]; then
+        basename "$dir"
+        return 0
+      fi
+    fi
+  done
+  return 1
+}
+
+# Check if THIS session already has an active loop
+EXISTING_SESSION_LOOP=""
+if EXISTING_SESSION_LOOP=$(find_session_loop "$SESSION_ID"); then
+  # This session already has a loop bound
+  if [[ -z "$PROJECT_SLUG" ]] || [[ "$PROJECT_SLUG" == "$EXISTING_SESSION_LOOP" ]]; then
+    # Continue with existing loop
+    PROJECT_SLUG="$EXISTING_SESSION_LOOP"
     PROJECT_DIR=".project-plan/$PROJECT_SLUG"
+    STATE_FILE="$PROJECT_DIR/loop-state.local.md"
+    EXISTING_ITERATION=$(parse_frontmatter "$STATE_FILE" "iteration")
 
     # Get current task count for display
     TOTAL_TASKS=$(grep -cE '^\- \[ \]|^\- \[x\]' "$PROJECT_DIR/PROGRESS.md" 2>/dev/null || true)
@@ -104,16 +144,16 @@ Progress: $COMPLETED_TASKS/$TOTAL_TASKS tasks complete ($PENDING_TASKS remaining
 EOF
     exit 0
   else
-    # User specified a different project - error
-    echo "❌ Error: Work loop already active for: $EXISTING_SLUG" >&2
-    echo "   You requested: $PROJECT_SLUG" >&2
-    echo "" >&2
-    echo "   Use /project-plan:cancel to stop the current loop first." >&2
-    exit 1
+    # User wants to switch to a different project - unbind from current first
+    OLD_STATE_FILE=".project-plan/$EXISTING_SESSION_LOOP/loop-state.local.md"
+    if [[ -f "$OLD_STATE_FILE" ]]; then
+      rm "$OLD_STATE_FILE"
+    fi
+    echo "📋 Switched from $EXISTING_SESSION_LOOP to $PROJECT_SLUG"
   fi
 fi
 
-# No active loop - auto-select project if none provided
+# Auto-select project if none provided
 AUTO_SELECTED=""
 if [[ -z "$PROJECT_SLUG" ]]; then
   if [[ ! -d ".project-plan" ]]; then
@@ -182,15 +222,31 @@ if [[ ! -f "$PROJECT_DIR/PROGRESS.md" ]]; then
   exit 1
 fi
 
-# Create state file directory
-mkdir -p .claude
-STATE_FILE=".claude/project-plan-loop.local.md"
+# Check for existing state (could be from crashed session or another instance)
+STATE_FILE="$PROJECT_DIR/loop-state.local.md"
+RESUMING=""
+ITERATION=1
 
-# Create state file with YAML frontmatter
+if [[ -f "$STATE_FILE" ]]; then
+  EXISTING_SESSION=$(parse_frontmatter "$STATE_FILE" "session_id")
+  EXISTING_ITERATION=$(parse_frontmatter "$STATE_FILE" "iteration")
+
+  if [[ "$EXISTING_SESSION" == "$SESSION_ID" ]]; then
+    # Same session - already handled above, but just in case
+    ITERATION="${EXISTING_ITERATION:-1}"
+    RESUMING=" (continuing)"
+  else
+    # Different session - this is a recovery/takeover scenario
+    ITERATION="${EXISTING_ITERATION:-1}"
+    RESUMING=" (resumed from previous session at iteration $ITERATION)"
+  fi
+fi
+
+# Create/update state file with session binding
 cat > "$STATE_FILE" <<EOF
 ---
-project_slug: $PROJECT_SLUG
-iteration: 1
+session_id: "$SESSION_ID"
+iteration: $ITERATION
 started_at: "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
 ---
 EOF
@@ -198,14 +254,13 @@ EOF
 # Get current task count for display
 TOTAL_TASKS=$(grep -cE '^\- \[ \]|^\- \[x\]' "$PROJECT_DIR/PROGRESS.md" 2>/dev/null || true)
 COMPLETED_TASKS=$(grep -cE '^\- \[x\]' "$PROJECT_DIR/PROGRESS.md" 2>/dev/null || true)
-# Ensure numeric values for arithmetic
 TOTAL_TASKS=${TOTAL_TASKS:-0}
 COMPLETED_TASKS=${COMPLETED_TASKS:-0}
 PENDING_TASKS=$((TOTAL_TASKS - COMPLETED_TASKS))
 
 # Output setup message
 cat <<EOF
-🔄 Project work loop activated!
+🔄 Project work loop activated!$RESUMING
 
 Project: $PROJECT_SLUG$AUTO_SELECTED
 Progress: $COMPLETED_TASKS/$TOTAL_TASKS tasks complete ($PENDING_TASKS remaining)
@@ -213,8 +268,8 @@ Progress: $COMPLETED_TASKS/$TOTAL_TASKS tasks complete ($PENDING_TASKS remaining
 The stop hook is now active. After each task completion, the work prompt will be
 fed back automatically. The loop stops when all tasks in PROGRESS.md are complete.
 
-To monitor: head -10 .claude/project-plan-loop.local.md
-To cancel:  /project-plan:cancel
+To monitor: cat .project-plan/$PROJECT_SLUG/loop-state.local.md
+To cancel:  /project-plan:cancel $PROJECT_SLUG
 
 ───────────────────────────────────────────────────────────────
 

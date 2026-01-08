@@ -7,7 +7,7 @@ description: Show current project progress
 ## Context
 
 - Available projects: !`ls -d .project-plan/*/ 2>/dev/null | grep -v _templates | xargs -I {} basename {} 2>/dev/null || echo "none"`
-- Active work loop: !`test -f .claude/project-plan-loop.local.md && grep '^project_slug:' .claude/project-plan-loop.local.md | sed 's/project_slug: *//' || echo "none"`
+- Active work loops: !`ls .project-plan/*/loop-state.local.md 2>/dev/null | xargs -I {} dirname {} | xargs -I {} basename {} 2>/dev/null | tr '\n' ' ' || echo "none"`
 
 ## Your Task
 
@@ -46,7 +46,7 @@ Continue with: /project-plan:work $ARGUMENTS
 Cancel loop:   /project-plan:cancel
 ```
 
-To check if work loop is active for this project, check if `.claude/project-plan-loop.local.md` exists and contains this project's slug.
+To check if work loop is active for this project, check if `.project-plan/<slug>/loop-state.local.md` exists.
 
 ### For All Projects
 

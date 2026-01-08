@@ -1,34 +1,55 @@
 #!/bin/bash
 
 # Project Plan Stop Hook
-# Prevents session exit when a project work loop is active
-# Feeds the work prompt back to continue implementation
+# Prevents session exit when a project work loop is active for THIS session
+# Supports multiple Claude instances working on different projects simultaneously
 
 set -euo pipefail
 
-# Read hook input from stdin (advanced stop hook API)
+# Read hook input from stdin (JSON with session_id, transcript_path, etc.)
 HOOK_INPUT=$(cat)
 
-# Check if project-plan loop is active
-STATE_FILE=".claude/project-plan-loop.local.md"
-
-if [[ ! -f "$STATE_FILE" ]]; then
-  # No active loop - allow exit
+# Extract session_id from hook input
+SESSION_ID=$(echo "$HOOK_INPUT" | jq -r '.session_id // empty')
+if [[ -z "$SESSION_ID" ]]; then
+  # No session ID - can't determine which loop belongs to this session
   exit 0
 fi
 
-# Parse markdown frontmatter (YAML between ---) and extract values
-FRONTMATTER=$(sed -n '/^---$/,/^---$/{ /^---$/d; p; }' "$STATE_FILE")
-PROJECT_SLUG=$(echo "$FRONTMATTER" | grep '^project_slug:' | sed 's/project_slug: *//')
-ITERATION=$(echo "$FRONTMATTER" | grep '^iteration:' | sed 's/iteration: *//')
+# Helper: Parse YAML frontmatter value from a file
+parse_frontmatter() {
+  local file="$1"
+  local key="$2"
+  sed -n '/^---$/,/^---$/{ /^---$/d; p; }' "$file" | grep "^${key}:" | sed "s/${key}: *//" | tr -d '"'
+}
 
-# Validate state file
+# Find the project bound to THIS session
+PROJECT_SLUG=""
+STATE_FILE=""
+
+if [[ -d ".project-plan" ]]; then
+  for dir in .project-plan/*/; do
+    local_state="${dir}loop-state.local.md"
+    if [[ -f "$local_state" ]]; then
+      file_session=$(parse_frontmatter "$local_state" "session_id")
+      if [[ "$file_session" == "$SESSION_ID" ]]; then
+        PROJECT_SLUG=$(basename "$dir")
+        STATE_FILE="$local_state"
+        break
+      fi
+    fi
+  done
+fi
+
+# No active loop for this session - allow exit
 if [[ -z "$PROJECT_SLUG" ]]; then
-  echo "⚠️  Project work loop: State file corrupted (no project_slug)" >&2
-  rm "$STATE_FILE"
   exit 0
 fi
 
+# Read loop state
+ITERATION=$(parse_frontmatter "$STATE_FILE" "iteration")
+
+# Validate iteration is numeric
 if [[ ! "$ITERATION" =~ ^[0-9]+$ ]]; then
   echo "⚠️  Project work loop: State file corrupted (invalid iteration: '$ITERATION')" >&2
   rm "$STATE_FILE"
@@ -48,8 +69,8 @@ fi
 
 # Count tasks in PROGRESS.md
 # Tasks are lines matching "- [ ]" (pending) or "- [x]" (complete)
-TOTAL_TASKS=$(grep -cE '^\- \[ \]|^\- \[x\]' "$PROGRESS_FILE" 2>/dev/null || echo "0")
-COMPLETED_TASKS=$(grep -cE '^\- \[x\]' "$PROGRESS_FILE" 2>/dev/null || echo "0")
+TOTAL_TASKS=$(grep -cE '^\- \[ \]|^\- \[x\]' "$PROGRESS_FILE" 2>/dev/null || true)
+COMPLETED_TASKS=$(grep -cE '^\- \[x\]' "$PROGRESS_FILE" 2>/dev/null || true)
 # Ensure numeric values for arithmetic
 TOTAL_TASKS=${TOTAL_TASKS:-0}
 COMPLETED_TASKS=${COMPLETED_TASKS:-0}
@@ -81,14 +102,17 @@ sed "s/^iteration: .*/iteration: $NEXT_ITERATION/" "$STATE_FILE" > "$TEMP_FILE"
 mv "$TEMP_FILE" "$STATE_FILE"
 
 # Build the work prompt that gets fed back
-WORK_PROMPT=$(cat <<'PROMPT_EOF'
+# Note: Using PROMPT_EOF without quotes to allow variable expansion
+WORK_PROMPT=$(cat <<PROMPT_EOF
 ## Project Work Loop
+
+**Active Project:** \`.project-plan/${PROJECT_SLUG}/\`
 
 ### Your Task This Iteration
 
 1. **Read Current State**
-   - Read PROGRESS.md to find the highest priority PENDING task (look for `- [ ]`)
-   - Read INDEX.md for patterns, constraints, and project context
+   - Read \`.project-plan/${PROJECT_SLUG}/PROGRESS.md\` to find the highest priority PENDING task (look for \`- [ ]\`)
+   - Read \`.project-plan/${PROJECT_SLUG}/INDEX.md\` for patterns, constraints, and project context
    - Read NEXT_STEPS.md if it exists for detailed task instructions
 
 2. **Implement**
@@ -98,7 +122,7 @@ WORK_PROMPT=$(cat <<'PROMPT_EOF'
    - Keep changes focused - do not over-engineer
 
 3. **Update Documentation**
-   - Mark task complete: change `- [ ]` to `- [x]` in PROGRESS.md
+   - Mark task complete: change \`- [ ]\` to \`- [x]\` in PROGRESS.md
    - Update the completion count/percentage in PROGRESS.md
    - Add any NEW tasks discovered during implementation
    - Reprioritize if needed based on what you learned
@@ -120,8 +144,10 @@ Use AskUserQuestion when you encounter:
 After asking and receiving an answer, CONTINUE WORKING on the next task.
 
 ### Important
+- Work ONLY on the active project shown above (\`${PROJECT_SLUG}\`)
 - Complete ONE task per iteration, then the loop continues automatically
-- The loop stops when ALL tasks in PROGRESS.md are marked `- [x]`
+- The loop stops automatically when ALL tasks in PROGRESS.md are marked \`- [x]\`
+- Do NOT run /project-plan:cancel - the stop hook handles completion automatically
 - Focus on steady progress - quality over speed
 PROMPT_EOF
 )

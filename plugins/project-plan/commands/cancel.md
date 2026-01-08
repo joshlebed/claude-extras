@@ -1,20 +1,29 @@
 ---
-description: "Cancel active project work loop"
-allowed-tools: ["Bash(test -f .claude/project-plan-loop.local.md:*)", "Bash(rm .claude/project-plan-loop.local.md)", "Read(.claude/project-plan-loop.local.md)"]
+description: "Cancel project work loop"
+argument-hint: "[project-slug]"
+allowed-tools: ["Bash(test -f .project-plan/*/loop-state.local.md:*)", "Bash(rm .project-plan/*/loop-state.local.md)", "Bash(ls .project-plan/*/loop-state.local.md:*)", "Bash(cat .project-plan/*/loop-state.local.md)", "Read(.project-plan/*/loop-state.local.md)"]
 ---
 
 # Cancel Work Loop
 
-To cancel the project work loop:
+To cancel a project work loop:
 
-1. Check if `.claude/project-plan-loop.local.md` exists using Bash: `test -f .claude/project-plan-loop.local.md && echo "EXISTS" || echo "NOT_FOUND"`
+1. **If a project slug was provided** (e.g., `/project-plan:cancel my-project`):
+   - Check if `.project-plan/<slug>/loop-state.local.md` exists
+   - If it exists, read it to get the iteration count, then remove it
+   - Report: "Cancelled work loop for [slug] (was at iteration N)"
 
-2. **If NOT_FOUND**: Say "No active project work loop found."
+2. **If no project slug was provided**:
+   - List all active loops: `ls .project-plan/*/loop-state.local.md 2>/dev/null`
+   - If none found: Say "No active project work loops found."
+   - If one found: Cancel it automatically
+   - If multiple found: List them and ask the user which one to cancel
 
-3. **If EXISTS**:
-   - Read `.claude/project-plan-loop.local.md` to get:
-     - `project_slug:` - the project being worked on
-     - `iteration:` - how many iterations completed
-   - Remove the file using Bash: `rm .claude/project-plan-loop.local.md`
-   - Report: "Cancelled work loop for [project_slug] (was at iteration N)"
-   - Remind user they can resume with `/project-plan:work [project_slug]`
+3. After canceling, remind the user they can resume with `/project-plan:work [slug]`
+
+## Important Notes
+
+- State files are now stored per-project at `.project-plan/<slug>/loop-state.local.md`
+- Multiple Claude instances can have separate loops for different projects
+- Canceling removes the state file, which stops the loop for that project
+- The stop hook automatically cleans up when all tasks are complete - manual cancel is only needed for early termination
