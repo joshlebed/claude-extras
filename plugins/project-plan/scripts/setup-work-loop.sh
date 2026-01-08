@@ -87,8 +87,8 @@ if [[ -f "$STATE_FILE" ]]; then
     PROJECT_DIR=".project-plan/$PROJECT_SLUG"
 
     # Get current task count for display
-    TOTAL_TASKS=$(grep -cE '^\- \[ \]|^\- \[x\]' "$PROJECT_DIR/PROGRESS.md" 2>/dev/null || echo "0")
-    COMPLETED_TASKS=$(grep -cE '^\- \[x\]' "$PROJECT_DIR/PROGRESS.md" 2>/dev/null || echo "0")
+    TOTAL_TASKS=$(grep -cE '^\- \[ \]|^\- \[x\]' "$PROJECT_DIR/PROGRESS.md" 2>/dev/null || true)
+    COMPLETED_TASKS=$(grep -cE '^\- \[x\]' "$PROJECT_DIR/PROGRESS.md" 2>/dev/null || true)
     TOTAL_TASKS=${TOTAL_TASKS:-0}
     COMPLETED_TASKS=${COMPLETED_TASKS:-0}
     PENDING_TASKS=$((TOTAL_TASKS - COMPLETED_TASKS))
@@ -196,8 +196,8 @@ started_at: "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
 EOF
 
 # Get current task count for display
-TOTAL_TASKS=$(grep -cE '^\- \[ \]|^\- \[x\]' "$PROJECT_DIR/PROGRESS.md" 2>/dev/null || echo "0")
-COMPLETED_TASKS=$(grep -cE '^\- \[x\]' "$PROJECT_DIR/PROGRESS.md" 2>/dev/null || echo "0")
+TOTAL_TASKS=$(grep -cE '^\- \[ \]|^\- \[x\]' "$PROJECT_DIR/PROGRESS.md" 2>/dev/null || true)
+COMPLETED_TASKS=$(grep -cE '^\- \[x\]' "$PROJECT_DIR/PROGRESS.md" 2>/dev/null || true)
 # Ensure numeric values for arithmetic
 TOTAL_TASKS=${TOTAL_TASKS:-0}
 COMPLETED_TASKS=${COMPLETED_TASKS:-0}
