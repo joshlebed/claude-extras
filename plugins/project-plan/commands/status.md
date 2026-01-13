@@ -6,8 +6,9 @@ description: Show current project progress
 
 ## Context
 
-- Available projects: !`ls -d .project-plan/*/ 2>/dev/null | grep -v _templates | xargs -I {} basename {} 2>/dev/null || echo "none"`
-- Active work loops: !`ls .project-plan/*/loop-state.local.md 2>/dev/null | xargs -I {} dirname {} | xargs -I {} basename {} 2>/dev/null | tr '\n' ' ' || echo "none"`
+- Project root: !`echo "${PROJECT_PLAN_ROOT_DIR:-.}"`
+- Available projects: !`ls -d "${PROJECT_PLAN_ROOT_DIR:-.}/.project-plan"/*/ 2>/dev/null | grep -v _templates | xargs -I {} basename {} 2>/dev/null || echo "none"`
+- Active work loops: !`ls "${PROJECT_PLAN_ROOT_DIR:-.}/.project-plan"/*/loop-state.local.md 2>/dev/null | xargs -I {} dirname {} | xargs -I {} basename {} 2>/dev/null | tr '\n' ' ' || echo "none"`
 
 ## Your Task
 
@@ -17,7 +18,7 @@ If no project specified, list all projects with their status.
 
 ### For Specific Project
 
-Read @.project-plan/$ARGUMENTS/PROGRESS.md and show:
+Read the PROGRESS.md file in `${PROJECT_PLAN_ROOT_DIR:-.}/.project-plan/$ARGUMENTS/` and show:
 
 ```
 ## Project: $ARGUMENTS
@@ -46,7 +47,7 @@ Continue with: /project-plan:work $ARGUMENTS
 Cancel loop:   /project-plan:cancel
 ```
 
-To check if work loop is active for this project, check if `.project-plan/<slug>/loop-state.local.md` exists.
+To check if work loop is active for this project, check if `${PROJECT_PLAN_ROOT_DIR:-.}/.project-plan/<slug>/loop-state.local.md` exists.
 
 ### For All Projects
 

@@ -13,6 +13,9 @@ else
     PLUGIN_ROOT="$(dirname "${SCRIPT_DIR}")"
 fi
 
+# Get root directory for project files (original CWD, for multi-directory support)
+ROOT_DIR="${PROJECT_PLAN_ROOT_DIR:-.}"
+
 # Get session ID from environment (set by SessionStart hook via CLAUDE_ENV_FILE)
 SESSION_ID="${PROJECT_PLAN_SESSION_ID:-}"
 
@@ -100,10 +103,10 @@ parse_frontmatter() {
 # When SESSION_ID is "pending-bind", also matches existing pending-bind loops
 find_session_loop() {
   local session="$1"
-  if [[ ! -d ".project-plan" ]]; then
+  if [[ ! -d "$ROOT_DIR/.project-plan" ]]; then
     return 1
   fi
-  for dir in .project-plan/*/; do
+  for dir in "$ROOT_DIR/.project-plan"/*/; do
     local state_file="${dir}loop-state.local.md"
     if [[ -f "$state_file" ]]; then
       local file_session
@@ -125,7 +128,7 @@ if EXISTING_SESSION_LOOP=$(find_session_loop "$SESSION_ID"); then
   if [[ -z "$PROJECT_SLUG" ]] || [[ "$PROJECT_SLUG" == "$EXISTING_SESSION_LOOP" ]]; then
     # Continue with existing loop
     PROJECT_SLUG="$EXISTING_SESSION_LOOP"
-    PROJECT_DIR=".project-plan/$PROJECT_SLUG"
+    PROJECT_DIR="$ROOT_DIR/.project-plan/$PROJECT_SLUG"
     STATE_FILE="$PROJECT_DIR/loop-state.local.md"
     EXISTING_ITERATION=$(parse_frontmatter "$STATE_FILE" "iteration")
 
@@ -148,7 +151,7 @@ EOF
     exit 0
   else
     # User wants to switch to a different project - unbind from current first
-    OLD_STATE_FILE=".project-plan/$EXISTING_SESSION_LOOP/loop-state.local.md"
+    OLD_STATE_FILE="$ROOT_DIR/.project-plan/$EXISTING_SESSION_LOOP/loop-state.local.md"
     if [[ -f "$OLD_STATE_FILE" ]]; then
       rm "$OLD_STATE_FILE"
     fi
@@ -159,7 +162,7 @@ fi
 # Auto-select project if none provided
 AUTO_SELECTED=""
 if [[ -z "$PROJECT_SLUG" ]]; then
-  if [[ ! -d ".project-plan" ]]; then
+  if [[ ! -d "$ROOT_DIR/.project-plan" ]]; then
     echo "❌ Error: No projects found" >&2
     echo "   Run /project-plan:new first to create a project." >&2
     exit 1
@@ -169,7 +172,7 @@ if [[ -z "$PROJECT_SLUG" ]]; then
   MOST_RECENT=""
   MOST_RECENT_TIME=0
 
-  for dir in .project-plan/*/; do
+  for dir in "$ROOT_DIR/.project-plan"/*/; do
     if [[ -f "${dir}PROGRESS.md" ]]; then
       # Get modification time (works on both macOS and Linux)
       if [[ "$(uname)" == "Darwin" ]]; then
@@ -196,15 +199,15 @@ if [[ -z "$PROJECT_SLUG" ]]; then
 fi
 
 # Validate project exists
-PROJECT_DIR=".project-plan/$PROJECT_SLUG"
+PROJECT_DIR="$ROOT_DIR/.project-plan/$PROJECT_SLUG"
 if [[ ! -d "$PROJECT_DIR" ]]; then
   echo "❌ Error: Project not found: $PROJECT_SLUG" >&2
   echo "" >&2
   echo "   Directory .project-plan/$PROJECT_SLUG/ does not exist." >&2
   echo "" >&2
   echo "   Available projects:" >&2
-  if [[ -d ".project-plan" ]]; then
-    for dir in .project-plan/*/; do
+  if [[ -d "$ROOT_DIR/.project-plan" ]]; then
+    for dir in "$ROOT_DIR/.project-plan"/*/; do
       if [[ -f "${dir}PROGRESS.md" ]]; then
         slug=$(basename "$dir")
         echo "     - $slug" >&2
@@ -280,7 +283,7 @@ Progress: $COMPLETED_TASKS/$TOTAL_TASKS tasks complete ($PENDING_TASKS remaining
 The stop hook is now active. After each task completion, the work prompt will be
 fed back automatically. The loop stops when all tasks in PROGRESS.md are complete.
 
-To monitor: cat .project-plan/$PROJECT_SLUG/loop-state.local.md
+To monitor: cat $ROOT_DIR/.project-plan/$PROJECT_SLUG/loop-state.local.md
 To cancel:  /project-plan:cancel $PROJECT_SLUG
 
 ───────────────────────────────────────────────────────────────
