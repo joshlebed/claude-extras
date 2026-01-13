@@ -1,23 +1,25 @@
 {
-  "PreToolUse": [
-    {
-      "matcher": "Bash",
-      "hooks": [
-        {
-          "type": "command",
-          "command": "jq -r '.tool_input.command // \"\"' | grep -qE '^gh pr create|^git push.*origin' && echo 'Tip: Consider running /pr-workflow:describe first to generate a PR description' >&2; exit 0"
-        }
-      ]
-    }
-  ],
-  "Stop": [
-    {
-      "hooks": [
-        {
-          "type": "command",
-          "command": "data=$(cat); echo \"$data\" | jq -r '.stop_hook_active // false' | grep -q 'true' && exit 0; echo \"$data\" | jq -r '.transcript_path' | xargs -I {} sh -c 'tail -100 \"{}\" 2>/dev/null | grep -qE \"pr-description-expert|pr-critical-reviewer|pr-tech-lead|pr-senior-engineer\" && echo \"PR workflow agents were used. Remember to review the outputs before creating/updating your PR.\" >&2'; exit 0"
-        }
-      ]
-    }
-  ]
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "jq -r '.tool_input.command // \"\"' | grep -qE '^gh pr create|^git push.*origin' && echo 'Tip: Consider running /pr-workflow:describe first to generate a PR description' >&2; exit 0"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "data=$(cat); echo \"$data\" | jq -r '.stop_hook_active // false' | grep -q 'true' && exit 0; echo \"$data\" | jq -r '.transcript_path' | xargs -I {} sh -c 'tail -100 \"{}\" 2>/dev/null | grep -qE \"pr-description-expert|pr-critical-reviewer|pr-tech-lead|pr-senior-engineer\" && echo \"PR workflow agents were used. Remember to review the outputs before creating/updating your PR.\" >&2'; exit 0"
+          }
+        ]
+      }
+    ]
+  }
 }
