@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Project Plan Session Start Hook
-# Persists session_id to environment for use by work loop scripts
+# Persists session_id and root directory to environment for use by work loop scripts
 #
 # Note: If CLAUDE_ENV_FILE isn't available in hook context, the setup-work-loop.sh
 # script uses a "pending-bind" placeholder that gets bound to the real session ID
@@ -14,8 +14,13 @@ HOOK_INPUT=$(cat)
 
 # Extract session_id and persist to CLAUDE_ENV_FILE if available
 SESSION_ID=$(echo "$HOOK_INPUT" | jq -r '.session_id // empty')
-if [ -n "${CLAUDE_ENV_FILE:-}" ] && [ -n "$SESSION_ID" ]; then
-  echo "export PROJECT_PLAN_SESSION_ID=\"$SESSION_ID\"" >> "$CLAUDE_ENV_FILE"
+if [ -n "${CLAUDE_ENV_FILE:-}" ]; then
+  # Capture original working directory as project root (for multi-directory support)
+  echo "export PROJECT_PLAN_ROOT_DIR=\"$(pwd)\"" >> "$CLAUDE_ENV_FILE"
+
+  if [ -n "$SESSION_ID" ]; then
+    echo "export PROJECT_PLAN_SESSION_ID=\"$SESSION_ID\"" >> "$CLAUDE_ENV_FILE"
+  fi
 fi
 
 exit 0

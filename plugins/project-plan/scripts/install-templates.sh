@@ -16,8 +16,11 @@ else
     PLUGIN_ROOT="$(dirname "${SCRIPT_DIR}")"
 fi
 
+# Get root directory for project files (original CWD, for multi-directory support)
+ROOT_DIR="${PROJECT_PLAN_ROOT_DIR:-.}"
+
 TEMPLATES_SRC="${PLUGIN_ROOT}/templates"
-TEMPLATES_DST=".project-plan/_templates"
+TEMPLATES_DST="$ROOT_DIR/.project-plan/_templates"
 
 # Check if templates source exists
 if [ ! -d "${TEMPLATES_SRC}" ]; then
@@ -49,17 +52,18 @@ echo ""
 echo "Files created:"
 ls -1 "${TEMPLATES_DST}/"
 
-# Optionally update .gitignore
-if command -v git &> /dev/null && git rev-parse --git-dir &> /dev/null 2>&1; then
-    if [ -f .gitignore ]; then
-        if ! grep -q "^\.project-plan/?$" .gitignore 2>/dev/null; then
-            echo "" >> .gitignore
-            echo ".project-plan/" >> .gitignore
+# Optionally update .gitignore in the root directory
+GITIGNORE_FILE="$ROOT_DIR/.gitignore"
+if command -v git &> /dev/null && git -C "$ROOT_DIR" rev-parse --git-dir &> /dev/null 2>&1; then
+    if [ -f "$GITIGNORE_FILE" ]; then
+        if ! grep -q "^\.project-plan/?$" "$GITIGNORE_FILE" 2>/dev/null; then
+            echo "" >> "$GITIGNORE_FILE"
+            echo ".project-plan/" >> "$GITIGNORE_FILE"
             echo ""
             echo "Added .project-plan/ to .gitignore"
         fi
     else
-        echo ".project-plan/" > .gitignore
+        echo ".project-plan/" > "$GITIGNORE_FILE"
         echo ""
         echo "Created .gitignore with .project-plan/"
     fi

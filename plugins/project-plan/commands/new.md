@@ -7,9 +7,9 @@ description: Create project documentation for a feature or task
 ## Context
 
 - Ensure templates are installed:
-  !`test -d .project-plan/_templates || bash "${CLAUDE_PLUGIN_ROOT}/scripts/install-templates.sh"`
-- Templates location: @.project-plan/\_templates/
-- Existing projects: !`ls -d .project-plan/*/ 2>/dev/null | grep -v _templates | xargs -I {} basename {} 2>/dev/null || echo "none"`
+  !`test -d "${PROJECT_PLAN_ROOT_DIR:-.}/.project-plan/_templates" || bash "${CLAUDE_PLUGIN_ROOT}/scripts/install-templates.sh"`
+- Templates location: !`echo "${PROJECT_PLAN_ROOT_DIR:-.}/.project-plan/_templates/"`
+- Existing projects: !`ls -d "${PROJECT_PLAN_ROOT_DIR:-.}/.project-plan"/*/ 2>/dev/null | grep -v _templates | xargs -I {} basename {} 2>/dev/null || echo "none"`
 
 ## Your Task
 
@@ -32,17 +32,17 @@ Extract the project name from the prompt and generate a slug (lowercase, hyphens
 - "Add User Auth. Use OAuth2..." -> `add-user-auth`
 
 ```bash
-mkdir -p .project-plan/<project-slug>
+mkdir -p "${PROJECT_PLAN_ROOT_DIR:-.}/.project-plan/<project-slug>"
 ```
 
 ### Step 2: Read Templates
 
-Read these template files:
+Read these template files from the templates location shown above:
 
-- @.project-plan/\_templates/README.md - Best practices guide
-- @.project-plan/\_templates/INDEX_TEMPLATE.md - INDEX.md template
-- @.project-plan/\_templates/PROGRESS_TEMPLATE.md - PROGRESS.md template
-- @.project-plan/\_templates/NEXT_STEPS_TEMPLATE.md - NEXT_STEPS.md template (for complex projects)
+- README.md - Best practices guide
+- INDEX_TEMPLATE.md - INDEX.md template
+- PROGRESS_TEMPLATE.md - PROGRESS.md template
+- NEXT_STEPS_TEMPLATE.md - NEXT_STEPS.md template (for complex projects)
 
 ### Step 3: Analyze the Codebase
 

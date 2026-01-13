@@ -23,13 +23,16 @@ parse_frontmatter() {
   sed -n '/^---$/,/^---$/{ /^---$/d; p; }' "$file" | grep "^${key}:" | sed "s/${key}: *//" | tr -d '"'
 }
 
+# Get root directory for project files (original CWD, for multi-directory support)
+ROOT_DIR="${PROJECT_PLAN_ROOT_DIR:-.}"
+
 # Find the project bound to THIS session (or one waiting to be bound)
 PROJECT_SLUG=""
 STATE_FILE=""
 NEEDS_BINDING=""
 
-if [[ -d ".project-plan" ]]; then
-  for dir in .project-plan/*/; do
+if [[ -d "$ROOT_DIR/.project-plan" ]]; then
+  for dir in "$ROOT_DIR/.project-plan"/*/; do
     local_state="${dir}loop-state.local.md"
     if [[ -f "$local_state" ]]; then
       file_session=$(parse_frontmatter "$local_state" "session_id")
@@ -73,7 +76,7 @@ if [[ ! "$ITERATION" =~ ^[0-9]+$ ]]; then
 fi
 
 # Validate project still exists
-PROJECT_DIR=".project-plan/$PROJECT_SLUG"
+PROJECT_DIR="$ROOT_DIR/.project-plan/$PROJECT_SLUG"
 PROGRESS_FILE="$PROJECT_DIR/PROGRESS.md"
 
 if [[ ! -f "$PROGRESS_FILE" ]]; then
@@ -122,13 +125,13 @@ mv "$TEMP_FILE" "$STATE_FILE"
 WORK_PROMPT=$(cat <<PROMPT_EOF
 ## Project Work Loop
 
-**Active Project:** \`.project-plan/${PROJECT_SLUG}/\`
+**Active Project:** \`${ROOT_DIR}/.project-plan/${PROJECT_SLUG}/\`
 
 ### Your Task This Iteration
 
 1. **Read Current State**
-   - Read \`.project-plan/${PROJECT_SLUG}/PROGRESS.md\` to find the highest priority PENDING task (look for \`- [ ]\`)
-   - Read \`.project-plan/${PROJECT_SLUG}/INDEX.md\` for patterns, constraints, and project context
+   - Read \`${ROOT_DIR}/.project-plan/${PROJECT_SLUG}/PROGRESS.md\` to find the highest priority PENDING task (look for \`- [ ]\`)
+   - Read \`${ROOT_DIR}/.project-plan/${PROJECT_SLUG}/INDEX.md\` for patterns, constraints, and project context
    - Read NEXT_STEPS.md if it exists for detailed task instructions
 
 2. **Implement**
