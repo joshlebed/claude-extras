@@ -1,6 +1,6 @@
 {
   "name": "project-plan",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "description": "Project planning for AI coding agents. Create structured docs, track progress, and run autonomous work cycles.",
   "author": {
     "name": "Josh Lebedinsky"
@@ -15,6 +15,5 @@
   ],
   "homepage": "https://github.com/joshlebed/claude-extras",
   "repository": "https://github.com/joshlebed/claude-extras",
-  "commands": "./commands",
-  "hooks": "./hooks/hooks.json"
+  "commands": "./commands"
 }
